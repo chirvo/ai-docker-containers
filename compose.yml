@@ -1,0 +1,44 @@
+services:
+  a1111:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/a1111.dockerfile
+    env_file:
+      - ./env/a1111.env
+    environment:
+    - REPO="https://github.com/AUTOMATIC1111/stable-diffusion-webui"
+    - WORKDIR="stable-diffusion-webui"
+    - PARAMS=""
+    - PORT=7860
+    ports:
+      - "7860:7860"
+    devices:
+      - '/dev/kfd:/dev/kfd'
+      - '/dev/dri:/dev/dri'
+    group_add:
+      - video
+    volumes:
+      - ./volumes/a1111:/opt
+      - /tmp/output/a1111:/opt/stable-diffusion-webui/outputs
+
+  comfy:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/comfy.dockerfile
+    env_file:
+      - ./env/comfy.env
+    environment:
+      - REPO="https://github.com/comfyanonymous/ComfyUI.git"
+      - WORKDIR="ComfyUI"
+      - PARAMS=""
+    ports:
+      - "8188:8188"
+    devices:
+      - '/dev/kfd:/dev/kfd'
+      - '/dev/dri:/dev/dri'
+    group_add:
+      - video
+    volumes:
+      - ./volumes/comfy:/opt/ComfyUI
+      - /home/chirvo/comfy_models:/opt/ComfyUI/models
+      - /tmp/output/comfy:/opt/ComfyUI/output
