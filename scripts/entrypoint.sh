@@ -46,7 +46,7 @@ _install_requirements () {
   cd -
 }
 
-_run () {
+run () {
   local DEST_DIR=$(_get_dest_dir)
 
   echo "1. Cloning $GIT_URI into $DEST_DIR"
@@ -63,19 +63,14 @@ _run () {
   cd -
 }
 
-run () {
-    _run $1
-  exit 0
-}
-
 case "$1" in
-  a1111)	echo "Running AUTOMATIC1111"
+  a1111) echo "Running AUTOMATIC1111"
     GIT_URI="https://github.com/AUTOMATIC1111/stable-diffusion-webui"
     COMMAND_EXTRA_PARAMS=""
     COMMAND="python3 launch.py --listen --enable-insecure-extension-access"
     PORT=7860
   ;;
-  comfy)	echo "Running ComfyUI"
+  comfy) echo "Running ComfyUI"
     GIT_URI="https://github.com/comfyanonymous/ComfyUI.git"
     COMMAND_EXTRA_PARAMS=""
     COMMAND="python3 main.py --listen --enable-insecure-extension-access"
@@ -89,8 +84,6 @@ case "$1" in
     exit 1
   ;;
 esac
-if [ "$2" != "" ]; then
-  echo Not running. It's jsut a test.
-fi
+echo "run $1"
 run $1
 exit 0
