@@ -24,7 +24,7 @@ _get_dest_dir () {
 _clone_or_rebase_repo () {
   local DEST_DIR=$(_get_dest_dir)
   if [ -d "$DEST_DIR" ]; then
-    echo "Directory exists. Rebasing."
+    echo "Directory $DEST_DIR exists. Rebasing."
     cd $DEST_DIR
     git rebase
     cd -
@@ -59,7 +59,7 @@ run () {
 
   # run the command
   cd $DEST_DIR
-  "$COMMAND $COMMAND_EXTRA_PARAMS"
+  /bin/sh -c "$COMMAND $COMMAND_EXTRA_PARAMS"
   cd -
 }
 
