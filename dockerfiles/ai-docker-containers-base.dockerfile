@@ -11,6 +11,7 @@ ENV HSA_OVERRIDE_GFX_VERSION=10.3.0
 
 
 
+RUN mkdir /app
 WORKDIR /app
 COPY scripts/entrypoint.sh .
 RUN chmod +x entrypoint.sh

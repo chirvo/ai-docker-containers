@@ -11,7 +11,7 @@ services:
     group_add:
       - video
     volumes:
-      - ./volumes/a1111:/app/stable-diffusion-webui
+      - ./volumes/a1111:/app
       - /tmp/output/a1111:/app/stable-diffusion-webui/outputs
 
   comfy:
@@ -26,6 +26,6 @@ services:
     group_add:
       - video
     volumes:
-      - ./volumes/comfy:/app/ComfyUI
+      - ./volumes/comfy:/app
       - /home/chirvo/comfy_models:/app/ComfyUI/models
       - /tmp/output/comfy:/app/ComfyUI/output
