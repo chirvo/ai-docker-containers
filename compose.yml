@@ -11,8 +11,8 @@ services:
     group_add:
       - video
     volumes:
-      - ./volumes/a1111:/opt/stable-diffusion-webui
-      - /tmp/output/a1111:/opt/stable-diffusion-webui/outputs
+      - ./volumes/a1111:/app/stable-diffusion-webui
+      - /tmp/output/a1111:/app/stable-diffusion-webui/outputs
 
   comfy:
     build:
@@ -26,6 +26,6 @@ services:
     group_add:
       - video
     volumes:
-      - ./volumes/comfy:/opt/ComfyUI
-      - /home/chirvo/comfy_models:/opt/ComfyUI/models
-      - /tmp/output/comfy:/opt/ComfyUI/output
+      - ./volumes/comfy:/app/ComfyUI
+      - /home/chirvo/comfy_models:/app/ComfyUI/models
+      - /tmp/output/comfy:/app/ComfyUI/output
