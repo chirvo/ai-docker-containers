@@ -11,7 +11,7 @@ services:
     group_add:
       - video
     volumes:
-      - ./volumes/a1111:/opt
+      - ./volumes/a1111:/opt/stable-diffusion-webui
       - /tmp/output/a1111:/opt/stable-diffusion-webui/outputs
 
   comfy:
