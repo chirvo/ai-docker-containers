@@ -9,10 +9,8 @@ ENV HSA_OVERRIDE_GFX_VERSION=10.3.0
 #ENV HSA_OVERRIDE_GFX_VERSION=11.0.0
 #ENV PYTORCH_ROCM_ARCH=gfx1100
 
-
-
-RUN mkdir /app
-WORKDIR /app
+WORKDIR /
 COPY scripts/entrypoint.sh .
-RUN chmod +x entrypoint.sh
-ENTRYPOINT ["./entrypoint.sh"]
+RUN chmod +x /entrypoint.sh
+WORKDIR /app
+ENTRYPOINT ["/entrypoint.sh"]
