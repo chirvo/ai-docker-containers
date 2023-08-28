@@ -1,0 +1,44 @@
+#!/bin/bash
+
+build_image_pytorch2() {
+  docker buildx build --tag pytorch2_rocm5_jammy:latest - < ./dockerfiles/pytorch2_rocm5_jammy.dockerfile
+}
+
+build_image_ai_base() {
+  docker buildx build --tag ai_docker_container_base:latest - < ./dockerfiles/ai_docker_container_base.dockerfile
+}
+
+_image_rm () {
+#$1 IMAGE
+  echo -n "Removing images: '$1': "
+  docker image rm $1:latest
+  [ $? -eq 0 ] && echo "done." || "error." 
+}
+
+clean () {
+  echo "Pruning containers..."
+  docker container prune
+  echo -n "Removing images: 'pytorch2_rocm5_jammy': "
+  _image_rm pytorch2_rocm5_jammy
+  _image_rm ai_docker_container_base
+}
+
+case "$1" in
+clean) echo "Removing image"
+  clean
+  exit 1
+  ;;
+base) echo "Building all"
+  build_image_ai_base
+  ;;
+pytorch2) echo "Building all"
+  build_image_pytorch2
+  ;;
+all) echo "Building all"
+  build_image_pytorch2
+  ;;
+*)	echo "Usage: $0 {help|clean|all|pytorch2|base}"
+  exit 1
+  ;;
+esac
+exit 0
