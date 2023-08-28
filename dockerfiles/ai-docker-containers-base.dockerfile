@@ -1,4 +1,4 @@
-FROM pytorch2_rocm5_jammy:latest
+FROM pytorch2-rocm5-jammy:latest
 
 # Try running it with this command if you have issues:
 # For 6700, 6600 and maybe other RDNA2 or older:
@@ -11,7 +11,7 @@ ENV HSA_OVERRIDE_GFX_VERSION=10.3.0
 
 
 
-WORKDIR /opt
+WORKDIR /app
 COPY scripts/entrypoint.sh .
 RUN chmod +x entrypoint.sh
 ENTRYPOINT ["./entrypoint.sh"]

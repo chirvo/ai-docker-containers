@@ -1,11 +1,11 @@
 #!/bin/bash
 
 build_image_pytorch2() {
-  docker build --tag pytorch2_rocm5_jammy:latest -f ./dockerfiles/pytorch2_rocm5_jammy.dockerfile .
+  docker build --tag pytorch2-rocm5-jammy:latest -f ./dockerfiles/pytorch2-rocm5-jammy.dockerfile .
 }
 
 build_image_ai_base() {
-  docker build --tag ai_docker_containers_base:latest -f ./dockerfiles/ai_docker_containers_base.dockerfile .
+  docker build --tag ai-docker-containers-base:latest -f ./dockerfiles/ai-docker-containers-base.dockerfile .
 }
 
 _image_rm () {
@@ -18,9 +18,9 @@ _image_rm () {
 clean () {
   echo "Pruning containers..."
   docker container prune
-  echo -n "Removing images: 'pytorch2_rocm5_jammy': "
-  _image_rm pytorch2_rocm5_jammy
-  _image_rm ai_docker_containers_base
+  echo -n "Removing images: 'pytorch2-rocm5-jammy': "
+  _image_rm pytorch2-rocm5-jammy
+  _image_rm ai-docker-containers-base
 }
 
 case "$1" in
@@ -28,10 +28,10 @@ clean) echo "Removing image"
   clean
   exit 1
   ;;
-base) echo "Building ai_docker_containers_base"
+base) echo "Building ai-docker-containers-base"
   build_image_ai_base
   ;;
-pytorch2) echo "Building pytorch2_rocm5_jammy"
+pytorch2) echo "Building pytorch2-rocm5-jammy"
   build_image_pytorch2
   ;;
 all) echo "Building all"
