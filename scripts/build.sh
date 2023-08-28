@@ -1,11 +1,11 @@
 #!/bin/bash
 
 build_image_pytorch2() {
-  docker buildx build --tag pytorch2_rocm5_jammy:latest ./dockerfiles/pytorch2_rocm5_jammy.dockerfile
+  docker build --tag pytorch2_rocm5_jammy:latest -f ./dockerfiles/pytorch2_rocm5_jammy.dockerfile .
 }
 
 build_image_ai_base() {
-  docker buildx build --tag ai_docker_container_base:latest ./dockerfiles/ai_docker_container_base.dockerfile
+  docker build --tag ai_docker_container_base:latest -f ./dockerfiles/ai_docker_container_base.dockerfile .
 }
 
 _image_rm () {
@@ -28,10 +28,10 @@ clean) echo "Removing image"
   clean
   exit 1
   ;;
-base) echo "Building all"
+base) echo "Building ai_docker_container_base"
   build_image_ai_base
   ;;
-pytorch2) echo "Building all"
+pytorch2) echo "Building pytorch2_rocm5_jammy"
   build_image_pytorch2
   ;;
 all) echo "Building all"
