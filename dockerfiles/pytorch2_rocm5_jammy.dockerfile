@@ -1,6 +1,6 @@
 FROM ubuntu:jammy
 
-ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8 LANG=C.UTF-8 USE_CUDA=0
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get -y dist-upgrade \
@@ -14,9 +14,4 @@ RUN apt-get update && apt-get -y dist-upgrade && apt-get install -y \
     libtcmalloc-minimal4 llvm-amdgpu pkg-config python3-pip python3-venv \
     && apt-get clean
 
-# If you wanna use the stable version of PyTorch, comment the last line, then uncomment the line below
-#RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm5.4.2
-###
 RUN pip3 install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/rocm5.6
-
-CMD /bin/bash

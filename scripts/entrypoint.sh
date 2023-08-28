@@ -1,17 +1,5 @@
 #!/bin/bash
  
-USE_CUDA=0
-
-# Try running it with this command if you have issues:
-# For 6700, 6600 and maybe other RDNA2 or older:
-HSA_OVERRIDE_GFX_VERSION=10.3.0
-#PYTORCH_ROCM_ARCH=gfx1030
-
-# For AMD 7600 and maybe other RDNA3 cards: 
-#HSA_OVERRIDE_GFX_VERSION=11.0.0
-#PYTORCH_ROCM_ARCH=gfx1100
-
-
 #################
 # Common envvars
 # 
@@ -92,6 +80,10 @@ case "$1" in
     COMMAND_EXTRA_PARAMS=""
     COMMAND="python3 main.py --listen --enable-insecure-extension-access"
     PORT=8188
+  ;;
+  bash) echo "Running /bin/bash"
+    /bin/bash
+    exit 0
   ;;
   *) echo "'$1' is not a valid option."
     exit 1
