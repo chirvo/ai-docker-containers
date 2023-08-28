@@ -1,11 +1,11 @@
 #!/bin/bash
 
 build_image_pytorch2() {
-  docker buildx build --tag pytorch2_rocm5_jammy:latest - < ./dockerfiles/pytorch2_rocm5_jammy.dockerfile
+  docker buildx build --tag pytorch2_rocm5_jammy:latest ./dockerfiles/pytorch2_rocm5_jammy.dockerfile
 }
 
 build_image_ai_base() {
-  docker buildx build --tag ai_docker_container_base:latest - < ./dockerfiles/ai_docker_container_base.dockerfile
+  docker buildx build --tag ai_docker_container_base:latest ./dockerfiles/ai_docker_container_base.dockerfile
 }
 
 _image_rm () {
