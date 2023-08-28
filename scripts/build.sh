@@ -5,7 +5,7 @@ build_image_pytorch2() {
 }
 
 build_image_ai_base() {
-  docker build --tag ai_docker_container_base:latest -f ./dockerfiles/ai_docker_container_base.dockerfile .
+  docker build --tag ai_docker_containers_base:latest -f ./dockerfiles/ai_docker_containers_base.dockerfile .
 }
 
 _image_rm () {
@@ -20,7 +20,7 @@ clean () {
   docker container prune
   echo -n "Removing images: 'pytorch2_rocm5_jammy': "
   _image_rm pytorch2_rocm5_jammy
-  _image_rm ai_docker_container_base
+  _image_rm ai_docker_containers_base
 }
 
 case "$1" in
@@ -28,7 +28,7 @@ clean) echo "Removing image"
   clean
   exit 1
   ;;
-base) echo "Building ai_docker_container_base"
+base) echo "Building ai_docker_containers_base"
   build_image_ai_base
   ;;
 pytorch2) echo "Building pytorch2_rocm5_jammy"
