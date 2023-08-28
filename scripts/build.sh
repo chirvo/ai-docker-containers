@@ -36,6 +36,7 @@ pytorch2) echo "Building pytorch2-rocm5-jammy"
   ;;
 all) echo "Building all"
   build_image_pytorch2
+  build_image_ai_base
   ;;
 *)	echo "Usage: $0 {help|clean|all|pytorch2|base}"
   exit 1
