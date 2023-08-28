@@ -91,11 +91,14 @@ case "$1" in
     GIT_URI="https://github.com/comfyanonymous/ComfyUI.git"
     COMMAND_EXTRA_PARAMS=""
     COMMAND="python3 main.py --listen --enable-insecure-extension-access"
-    PORT=8180
+    PORT=8188
   ;;
   *) echo "'$1' is not a valid option."
     exit 1
   ;;
 esac
+if [ "$2" != "" ]; then
+  echo Not running. It's jsut a test.
+fi
 run $1
 exit 0
