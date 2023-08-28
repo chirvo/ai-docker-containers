@@ -12,7 +12,7 @@ services:
       - video
     volumes:
       - ./volumes/a1111:/app
-      - /tmp/output/a1111:/app/stable-diffusion-webui/outputs
+      # - /tmp/output/a1111:/app/stable-diffusion-webui/outputs
 
   comfy:
     build:
@@ -27,5 +27,5 @@ services:
       - video
     volumes:
       - ./volumes/comfy:/app
-      - /home/chirvo/comfy_models:/app/ComfyUI/models
-      - /tmp/output/comfy:/app/ComfyUI/output
+      # - /home/chirvo/comfy_models:/app/ComfyUI/models
+      # - /tmp/output/comfy:/app/ComfyUI/output
