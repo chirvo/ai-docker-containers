@@ -28,19 +28,19 @@ clean) echo "Removing image"
   _clean
   exit 1
   ;;
-pytorch) echo "Building pytorch2-rocm5-jammy"
+pytorch) echo "Building $1"
   _build pytorch-rocm-jammy
   ;;
-base) echo "Building ai-docker-containers-base"
+base) echo "Building $1"
   _build ai-docker-containers-base
   ;;
-a1111) echo "Building pytorch2-rocm5-jammy"
+a1111) echo "Building $1"
   _build ai-docker-containers-a1111
   ;;
-comfy) echo "Building pytorch2-rocm5-jammy"
+comfy) echo "Building $1"
   _build ai-docker-containers-comfy
   ;;
-all) echo "Building all"
+all) echo "Building $1"
   _build pytorch-rocm-jammy
   _build ai-docker-containers-base
   _build ai-docker-containers-a1111

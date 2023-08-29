@@ -1,27 +1,27 @@
 services:
   a1111:
-    image: ai-docker-containers-a1111
-    ports:
-      - "7860:7860"
-    devices:
-      - '/dev/kfd:/dev/kfd'
-      - '/dev/dri:/dev/dri'
+    image: chirvo/ai-docker-containers-base:latest
+    command: allll
     group_add:
       - video
+    devices:
+      - '/dev/dri:/dev/dri'
     volumes:
       - ./volumes/a1111:/app
       # - /tmp/output/a1111:/app/stable-diffusion-webui/outputs
+    ports:
+      - "7860:7860"
 
   comfy:
-    image: ai-docker-containers-comfy
-    ports:
-      - "8188:8188"
-    devices:
-      - '/dev/kfd:/dev/kfd'
-      - '/dev/dri:/dev/dri'
+    image: chirvo/ai-docker-containers-base:latest
+    command: comfy
     group_add:
       - video
+    devices:
+      - '/dev/dri:/dev/dri'
     volumes:
       - ./volumes/comfy:/app
       # - /home/chirvo/comfy_models:/app/ComfyUI/models
       # - /tmp/output/comfy:/app/ComfyUI/output
+    ports:
+      - "8188:8188"
