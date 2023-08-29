@@ -1,8 +1,6 @@
 services:
   a1111:
-    build:
-      context: .
-      dockerfile: ./dockerfiles/a1111.dockerfile
+    image: ai-docker-containers-a1111
     ports:
       - "7860:7860"
     devices:
@@ -15,9 +13,7 @@ services:
       # - /tmp/output/a1111:/app/stable-diffusion-webui/outputs
 
   comfy:
-    build:
-      context: .
-      dockerfile: ./dockerfiles/comfy.dockerfile
+    image: ai-docker-containers-comfy
     ports:
       - "8188:8188"
     devices:

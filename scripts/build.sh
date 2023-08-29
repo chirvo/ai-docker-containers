@@ -1,21 +1,21 @@
 #!/bin/bash
 
-build_image_pytorch2() {
-  docker build --tag pytorch2-rocm5-jammy:latest -f ./dockerfiles/pytorch2-rocm5-jammy.dockerfile .
+_build () {
+  # $1: dockerfile's name
+  if [ ! -f ./dockerfiles/$1.dockerfile ]; then
+    echo "Error: './dockerfiles/$1.dockerfile' does not exists. Cannot build."
+    exit 1
+  fi
+  docker build --tag chirvo/$1:latest -f ./dockerfiles/$1.dockerfile .
 }
-
-build_image_ai_base() {
-  docker build --tag ai-docker-containers-base:latest -f ./dockerfiles/ai-docker-containers-base.dockerfile .
-}
-
 _image_rm () {
 #$1 IMAGE
   echo -n "Removing images: '$1': "
-  docker image rm $1:latest
+  docker image rm chirvo/$1:latest
   [ $? -eq 0 ] && echo "done." || "error." 
 }
 
-clean () {
+_clean () {
   echo "Pruning containers..."
   docker container prune
   echo -n "Removing images: 'pytorch2-rocm5-jammy': "
@@ -25,20 +25,28 @@ clean () {
 
 case "$1" in
 clean) echo "Removing image"
-  clean
+  _clean
   exit 1
   ;;
-base) echo "Building ai-docker-containers-base"
-  build_image_ai_base
+pytorch) echo "Building pytorch2-rocm5-jammy"
+  _build pytorch-rocm-jammy
   ;;
-pytorch2) echo "Building pytorch2-rocm5-jammy"
-  build_image_pytorch2
+base) echo "Building ai-docker-containers-base"
+  _build ai-docker-containers-base
+  ;;
+a1111) echo "Building pytorch2-rocm5-jammy"
+  _build ai-docker-containers-a1111
+  ;;
+comfy) echo "Building pytorch2-rocm5-jammy"
+  _build ai-docker-containers-comfy
   ;;
 all) echo "Building all"
-  build_image_pytorch2
-  build_image_ai_base
+  _build pytorch-rocm-jammy
+  _build ai-docker-containers-base
+  _build ai-docker-containers-a1111
+  _build ai-docker-containers-comfy
   ;;
-*)	echo "Usage: $0 {help|clean|all|pytorch2|base}"
+*)	echo "Usage: $0 {help|clean|all|pytorch2|base|a1111|comfy}"
   exit 1
   ;;
 esac

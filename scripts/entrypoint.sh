@@ -2,7 +2,17 @@
  
 #################
 # Common envvars
-# 
+# Try running it with this command if you have issues:
+# For 6700, 6600 and maybe other RDNA2 or older:
+export HSA_OVERRIDE_GFX_VERSION="10.3.0"
+#export PYTORCH_ROCM_ARCH="gfx1030"
+
+# For AMD 7600 and maybe other RDNA3 cards: 
+#export HSA_OVERRIDE_GFX_VERSION="11.0.0"
+#export PYTORCH_ROCM_ARCH="gfx1100"
+
+#################
+# Script globals
 GIT_URI="https://github.com/AUTOMATIC1111/stable-diffusion-webui"
 COMMAND_EXTRA_PARAMS=""
 COMMAND="python3 launch.py --listen --enable-insecure-extension-access"
