@@ -1,13 +1,14 @@
 services:
   a1111:
     image: chirvo/ai-docker-containers-base:latest
-    command: allll
+    command: a1111
     group_add:
       - video
     devices:
       - '/dev/dri:/dev/dri'
-    volumes:
-      - ./volumes/a1111:/app
+      - '/dev/kfd:/dev/kfd'
+    # volumes:
+      # - ./volumes/a1111:/app
       # - /tmp/output/a1111:/app/stable-diffusion-webui/outputs
     ports:
       - "7860:7860"
@@ -19,6 +20,7 @@ services:
       - video
     devices:
       - '/dev/dri:/dev/dri'
+      - '/dev/kfd:/dev/kfd'
     volumes:
       - ./volumes/comfy:/app
       # - /home/chirvo/comfy_models:/app/ComfyUI/models
