@@ -10,7 +10,7 @@ _build () {
 }
 _image_rm () {
 #$1 IMAGE
-  echo -n "Removing images: '$1': "
+  echo -n "Removing image '$1': "
   docker image rm chirvo/$1:latest
   [ $? -eq 0 ] && echo "done." || "error." 
 }
@@ -18,18 +18,14 @@ _image_rm () {
 _clean () {
   echo "Pruning containers..."
   docker container prune
-  echo -n "Removing images: 'pytorch2-rocm5-jammy': "
-  _image_rm pytorch2-rocm5-jammy
   _image_rm ai-docker-containers-base
+  _image_rm ai-docker-containers-a1111
+  _image_rm ai-docker-containers-comfy
 }
 
 case "$1" in
-clean) echo "Removing image"
+clean) 
   _clean
-  exit 1
-  ;;
-pytorch) echo "Building $1"
-  _build pytorch-rocm-jammy
   ;;
 base) echo "Building $1"
   _build ai-docker-containers-base
@@ -41,12 +37,11 @@ comfy) echo "Building $1"
   _build ai-docker-containers-comfy
   ;;
 all) echo "Building $1"
-  _build pytorch-rocm-jammy
   _build ai-docker-containers-base
   _build ai-docker-containers-a1111
   _build ai-docker-containers-comfy
   ;;
-*)	echo "Usage: $0 {help|clean|all|pytorch2|base|a1111|comfy}"
+*)	echo "Usage: $0 {help|clean|all|base|a1111|comfy}"
   exit 1
   ;;
 esac

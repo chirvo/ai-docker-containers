@@ -7,9 +7,9 @@ services:
     devices:
       - '/dev/dri:/dev/dri'
       - '/dev/kfd:/dev/kfd'
-    # volumes:
-      # - ./volumes/a1111:/app
-      # - /tmp/output/a1111:/app/stable-diffusion-webui/outputs
+    volumes:
+      - ./volumes/a1111:/app
+      - /tmp/output/a1111:/app/stable-diffusion-webui/outputs
     ports:
       - "7860:7860"
 

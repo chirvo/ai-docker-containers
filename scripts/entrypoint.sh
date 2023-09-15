@@ -25,13 +25,21 @@ _get_dest_dir () {
   echo "$BASE_DIR/$(basename $GIT_URI .git)"
 }
 
-_clone_or_rebase_repo () {
+_clone_or_pull () {
   local DEST_DIR=$(_get_dest_dir)
   if [ -d "$DEST_DIR" ]; then
-    echo "Directory $DEST_DIR exists. Pulling changes."
-    _run_or_die cd $DEST_DIR
-    _run_or_die git pull
-    _run_or_die cd -
+    echo -n "Directory $DEST_DIR exists" 
+    if [ -d "$DEST_DIR/.git" ]; then
+      echo ". Pull changes."
+      _run_or_die cd $DEST_DIR
+      _run_or_die git pull
+      _run_or_die cd -
+    else
+      echo ", but is not a git repository. Forcing git clone on top of it."
+      _run_or_die git clone $GIT_URI $DEST_DIR.tmp
+      _run_or_die cp -fnr $GIT_URI $DEST_DIR.tmp $GIT_URI $DEST_DIR
+      _run_or_die rm -rf $DEST_DIR.tmp
+    fi
   else
     _run_or_die git clone $GIT_URI $DEST_DIR
   fi
@@ -62,16 +70,16 @@ _install_requirements () {
 run () {
   local DEST_DIR=$(_get_dest_dir)
 
-  echo "0. Cloning $GIT_URI into $DEST_DIR"
-  _clone_or_rebase_repo
+  echo "0. Clone $GIT_URI into $DEST_DIR"
+  _clone_or_pull
 
-  echo "1. Preparing venv"
+  echo "1. Prepare venv"
   _prepare_venv
 
-  echo "2. Installing requirements"
+  echo "2. Install requirements"
   _install_requirements
 
-  echo "3. Running the damn thing"
+  echo "3. Run the damn thing"
 
   # run the command
   cd $DEST_DIR
