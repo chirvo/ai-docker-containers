@@ -1,4 +1,4 @@
-FROM chirvo/ai-docker-containers-base:latest
+FROM chirvo/ai-rocm:latest
 # Install Golang
 
 EXPOSE 8188/tcp

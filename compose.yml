@@ -1,6 +1,8 @@
 services:
   a1111:
-    image: chirvo/ai-docker-containers-base:latest
+    image: chirvo/ai-rocm:latest
+    container_name: a1111
+    restart: unless-stopped
     command: a1111
     group_add:
       - video
@@ -10,20 +12,56 @@ services:
     volumes:
       - ./volumes/a1111:/app
       - /tmp/output/a1111:/app/stable-diffusion-webui/outputs
+      - /mnt/fatboy/chirvo/sd/models:/app/stable-diffusion-webui/models
+      - /mnt/fatboy/chirvo/sd/embeddings:/app/stable-diffusion-webui/embeddings
+      - /mnt/fatboy/chirvo/sd/extensions/sd-webui-controlnet/models:/app/stable-diffusion-webui/extensions/sd-webui-controlnet/models
     ports:
       - "7860:7860"
 
-  comfy:
-    image: chirvo/ai-docker-containers-base:latest
-    command: comfy
+  comfyui:
+    image: chirvo/ai-rocm:latest
+    container_name: comfyui
+    restart: unless-stopped
+    command: comfyui
     group_add:
       - video
     devices:
       - '/dev/dri:/dev/dri'
       - '/dev/kfd:/dev/kfd'
     volumes:
-      - ./volumes/comfy:/app
-      # - /home/chirvo/comfy_models:/app/ComfyUI/models
-      # - /tmp/output/comfy:/app/ComfyUI/output
+      - ./volumes/comfyui:/app
+      - /mnt/fatboy/chirvo/sd/models/Stable-diffusion:/app/ComfyUI/models
+      - /tmp/output/comfyui:/app/ComfyUI/output
     ports:
       - "8188:8188"
+
+  ollama:
+    image: chirvo/ai-ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    command: ollama
+    group_add:
+      - video
+    devices:
+      - '/dev/dri:/dev/dri'
+      - '/dev/kfd:/dev/kfd'
+    volumes:
+      - ./volumes/ollama/models:/root/.ollama
+      - ./volumes/ollama/app:/app
+    ports:
+      - "11434:11434"
+
+  ollama-webui:
+    image: ghcr.io/ollama-webui/ollama-webui:main
+    container_name: ollama-webui
+    volumes:
+      - ./volumes/ollama-webui:/app/backend/data
+    depends_on:
+      - ollama
+    ports:
+      - 3000:3000
+    environment:
+      - "OLLAMA_API_BASE_URL=http://ollama:11434/api"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    restart: unless-stopped

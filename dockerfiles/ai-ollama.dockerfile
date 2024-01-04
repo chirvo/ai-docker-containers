@@ -1,4 +1,4 @@
-FROM chirvo/ai-base:latest
+FROM chirvo/ai-rocm:latest
 
 RUN wget https://go.dev/dl/go1.21.5.linux-amd64.tar.gz \
   && tar -xvf go1.21.5.linux-amd64.tar.gz -C /usr/local
