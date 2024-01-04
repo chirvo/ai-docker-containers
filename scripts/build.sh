@@ -41,7 +41,7 @@ all)
       exit 0
     fi
   done
-  echo "Usage: $0 {help|clean|all|<image>}"
+  echo "Usage: $0 {clean|all|<image>}"
   echo ""
   echo "Available images: $IMAGES".
   echo ""
