@@ -2,10 +2,9 @@
  
 #################
 # Script globals
-GIT_URI="https://github.com/AUTOMATIC1111/stable-diffusion-webui"
+GIT_URI="" # e.g.: https://github.com/AUTOMATIC1111/stable-diffusion-webui
 COMMAND_EXTRA_PARAMS=""
-COMMAND="python3 launch.py --listen --enable-insecure-extension-access"
-PORT=7860
+COMMAND="" # e.g.: python3 launch.py --listen --enable-insecure-extension-access
 # generated envvars
 
 _run_or_die () {
@@ -90,15 +89,15 @@ run () {
 case "$1" in
   a1111) echo "Running AUTOMATIC1111"
     GIT_URI="https://github.com/AUTOMATIC1111/stable-diffusion-webui"
-    COMMAND_EXTRA_PARAMS=""
     COMMAND="python3 launch.py --listen --enable-insecure-extension-access"
-    PORT=7860
   ;;
-  comfy) echo "Running ComfyUI"
+  comfyui) echo "Running ComfyUI"
     GIT_URI="https://github.com/comfyanonymous/ComfyUI.git"
-    COMMAND_EXTRA_PARAMS=""
-    COMMAND="python3 main.py --listen --enable-insecure-extension-access --precision full --no-half --opt-sub-quad-attention"
-    PORT=8188
+    COMMAND="python3 main.py --listen"
+  ;;
+  ollama) echo "Running ollama"
+    GIT_URI="https://github.com/jmorganca/ollama.git"
+    COMMAND="/app/ollama serve"
   ;;
   bash) echo "Running /bin/bash"
     /bin/bash

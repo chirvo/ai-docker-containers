@@ -1,48 +1,44 @@
 #!/bin/bash
 
+IMAGES=$(basename -s .dockerfile -a "$(ls ./dockerfiles/*.dockerfile)" | sed -e 's/ai-//')
+
 _build () {
   # $1: dockerfile's name
-  if [ ! -f ./dockerfiles/$1.dockerfile ]; then
+  if [ ! -f "./dockerfiles/$1.dockerfile" ]; then
     echo "Error: './dockerfiles/$1.dockerfile' does not exists. Cannot build."
     exit 1
   fi
-  docker build --tag chirvo/$1:latest -f ./dockerfiles/$1.dockerfile .
+  docker build --tag "chirvo/$1:latest" -f "./dockerfiles/$1.dockerfile" .
 }
 _image_rm () {
-#$1 IMAGE
+#$1 Image
   echo -n "Removing image '$1': "
-  docker image rm chirvo/$1:latest
-  [ $? -eq 0 ] && echo "done." || "error." 
-}
-
-_clean () {
-  echo "Pruning containers..."
-  docker container prune
-  _image_rm ai-docker-containers-base
-  _image_rm ai-docker-containers-a1111
-  _image_rm ai-docker-containers-comfy
+  docker image rm "chirvo/$1:latest"
+  [ $? -eq 0 ] && echo "done." || echo "error." 
 }
 
 case "$1" in
 clean) 
-  _clean
-  ;;
-base) echo "Building $1"
-  _build ai-docker-containers-base
-  ;;
-a1111) echo "Building $1"
-  _build ai-docker-containers-a1111
-  ;;
-comfy) echo "Building $1"
-  _build ai-docker-containers-comfy
+  echo "Pruning containers..."
+  docker container prune
+  for IMAGE in $IMAGES
+  do
+    _image_rm "ai-$IMAGE"
+  done
   ;;
 all) echo "Building $1"
-  _build ai-docker-containers-base
-  _build ai-docker-containers-a1111
-  _build ai-docker-containers-comfy
+  for IMAGE in $IMAGES
+  do
+    _build "ai-$IMAGE"
+  done
   ;;
-*)	echo "Usage: $0 {help|clean|all|base|a1111|comfy}"
+*)
+if [ true ]; then
+  echo "It is true"
+else
+	echo "Usage: $0 {help|clean|all}"
   exit 1
+  fi
   ;;
 esac
 exit 0
