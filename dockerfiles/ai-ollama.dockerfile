@@ -1,12 +1,19 @@
-FROM chirvo/ai-rocm:latest
+FROM chirvo/base-rocm:latest AS rocm
+FROM chirvo/base-golang:latest AS golang
 
-RUN wget https://go.dev/dl/go1.21.5.linux-amd64.tar.gz \
-  && tar -xvf go1.21.5.linux-amd64.tar.gz -C /usr/local
+ARG GIT_URI="https://github.com/jmorganca/ollama.git"
+ARG DEST_DIR="ollama"
+WORKDIR /app
 
-ENV GOROOT="/usr/local/go"
-ENV GOPATH="/go"
-ENV PATH="${GOPATH}}/bin:${GOROOT}/bin:${PATH}"
+#Git clone
+RUN git clone ${GIT_URI}
+
+# Build ollama
+RUN cd ${DEST_DIR} \
+  && go generate ./... \
+  && go build .
 
 EXPOSE 11434/tcp
-CMD ["ollama"]
+CMD "/bin/bash"
+# CMD "./ollama serve"
 
