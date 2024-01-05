@@ -1,9 +1,9 @@
 services:
   a1111:
-    image: chirvo/ai-rocm:latest
+    image: chirvo/ai-a1111:latest
     container_name: a1111
-    restart: unless-stopped
-    command: a1111
+    # restart: unless-stopped
+    # command: a1111
     group_add:
       - video
     devices:
@@ -19,10 +19,10 @@ services:
       - "7860:7860"
 
   comfyui:
-    image: chirvo/ai-rocm:latest
+    image: chirvo/ai-comfyui:latest
     container_name: comfyui
-    restart: unless-stopped
-    command: comfyui
+    # restart: unless-stopped
+    # command: comfyui
     group_add:
       - video
     devices:
@@ -30,7 +30,11 @@ services:
       - '/dev/kfd:/dev/kfd'
     volumes:
       - ./volumes/comfyui:/app
-      - /mnt/fatboy/chirvo/sd/models/Stable-diffusion:/app/ComfyUI/models
+      - /mnt/fatboy/chirvo/sd/models/Stable-diffusion:/app/ComfyUI/models/checkpoints
+      - /mnt/fatboy/chirvo/sd/models/VAE:/app/ComfyUI/models/vae
+      - /mnt/fatboy/chirvo/sd/models/VAE-approx:/app/ComfyUI/models/vae_approx
+      - /mnt/fatboy/chirvo/sd/models/Lora:/app/ComfyUI/models/loras
+      - /mnt/fatboy/chirvo/sd/embeddings:/app/ComfyUI/models/embeddings
       - /tmp/output/comfyui:/app/ComfyUI/output
     ports:
       - "8188:8188"
@@ -38,8 +42,8 @@ services:
   ollama:
     image: chirvo/ai-ollama:latest
     container_name: ollama
-    restart: unless-stopped
-    command: ollama
+    # restart: unless-stopped
+    # command: ollama
     group_add:
       - video
     devices:
@@ -54,6 +58,7 @@ services:
   ollama-webui:
     image: ghcr.io/ollama-webui/ollama-webui:main
     container_name: ollama-webui
+    # restart: unless-stopped
     volumes:
       - ./volumes/ollama-webui:/app/backend/data
     depends_on:
@@ -64,4 +69,3 @@ services:
       - "OLLAMA_API_BASE_URL=http://ollama:11434/api"
     extra_hosts:
       - host.docker.internal:host-gateway
-    restart: unless-stopped
