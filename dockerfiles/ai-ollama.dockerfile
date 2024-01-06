@@ -1,19 +1,11 @@
-FROM chirvo/base-rocm:latest AS rocm
-FROM chirvo/base-golang:latest AS golang
+FROM chirvo/base-rocm:latest
 
-ARG GIT_URI="https://github.com/jmorganca/ollama.git"
-ARG DEST_DIR="ollama"
+ARG URI=https://ollama.ai/download/ollama-linux-amd64
 WORKDIR /app
-
-#Git clone
-RUN git clone ${GIT_URI}
-
-# Build ollama
-RUN cd ${DEST_DIR} \
-  && go generate ./... \
-  && go build .
+RUN wget ${URI} \
+  && mv ollama-linux-amd64 ollama \
+  && chmod 755 ollama
 
 EXPOSE 11434/tcp
-CMD "/bin/bash"
-# CMD "./ollama serve"
+CMD "/app/ollama serve"
 
