@@ -3,7 +3,6 @@ services:
     image: chirvo/ai-a1111:latest
     container_name: a1111
     # restart: unless-stopped
-    # command: a1111
     group_add:
       - video
     devices:
@@ -17,12 +16,12 @@ services:
       - /mnt/fatboy/chirvo/sd/extensions/sd-webui-controlnet/models:/app/stable-diffusion-webui/extensions/sd-webui-controlnet/models
     ports:
       - "7860:7860"
+    network_mode: host
 
   comfyui:
     image: chirvo/ai-comfyui:latest
     container_name: comfyui
     # restart: unless-stopped
-    # command: comfyui
     group_add:
       - video
     devices:
@@ -38,20 +37,19 @@ services:
       - /tmp/output/comfyui:/app/ComfyUI/output
     ports:
       - "8188:8188"
+    network_mode: host
 
   ollama:
     image: chirvo/ai-ollama:latest
     container_name: ollama
     # restart: unless-stopped
-    # command: ollama
     group_add:
       - video
     devices:
       - '/dev/dri:/dev/dri'
       - '/dev/kfd:/dev/kfd'
     volumes:
-      - ./volumes/ollama/models:/root/.ollama
-      - ./volumes/ollama/app:/app
+      - /mnt/fatboy/chirvo/ollama:/root/.ollama
     ports:
       - "11434:11434"
 
@@ -67,5 +65,6 @@ services:
       - 3000:3000
     environment:
       - "OLLAMA_API_BASE_URL=http://ollama:11434/api"
-    extra_hosts:
-      - host.docker.internal:host-gateway
+    network_mode: host
+    # extra_hosts:
+    #   - host.docker.internal:host-gateway

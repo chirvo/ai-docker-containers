@@ -1,19 +1,21 @@
 FROM chirvo/base-pytorch:latest
 
-ARG GIT_URI="https://github.com/comfyanonymous/ComfyUI.git"
-ARG DEST_DIR="ComfyUI"
+ARG GIT_URI=https://github.com/comfyanonymous/ComfyUI.git
+ARG DEST_DIR=ComfyUI
+
 WORKDIR /app
 
-#Git clone
-RUN git clone ${GIT_URI} ${DEST_DIR}.tmp \
-  && cp -fnr ${DEST_DIR}.tmp ${DEST_DIR} \
-  && rm -rf ${DEST_DIR}.tmp
+#Get the sources and copy them over the premounted volume
+RUN git clone ${GIT_URI} ${DEST_DIR}.tmp
+RUN cp -fnrv  ${DEST_DIR}.tmp ${DEST_DIR}
+RUN rm -rf ${DEST_DIR}.tmp
 
-#venv and reqs
-RUN python3 -m venv venv --system-site-packages \
-  && source ./venv/bin/activate \
-  && cd ${DEST_DIR} \
-  && pip3 install -r requirements.txt
+#venv
+RUN python3 -m venv venv --system-site-packages
+ENV PATH=/app/venv:${PATH}
+#reqs
+WORKDIR /app/${DEST_DIR}
+RUN pip3 install -r requirements.txt
 
 EXPOSE 8188/tcp
-CMD "python3 launch.py --listen"
+CMD python3 launch.py --listen
