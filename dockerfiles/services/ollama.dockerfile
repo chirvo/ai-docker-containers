@@ -1,4 +1,4 @@
-FROM chirvo/base-rocm:latest
+FROM chirvo/rocm:latest
 
 ARG URI=https://ollama.ai/download/ollama-linux-amd64
 

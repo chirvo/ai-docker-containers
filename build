@@ -1,0 +1,72 @@
+#!/bin/bash
+#shellcheck disable=2046
+BASE_IMAGES=$(echo $(basename -s .dockerfile -a $(ls ./dockerfiles/base/*.dockerfile)))
+SERVICE_IMAGES=$(echo $(basename -s .dockerfile -a $(ls ./dockerfiles/services/*.dockerfile)))
+
+_build() {
+  # $1: dockerfile's name
+  if [ ! -f "./dockerfiles/$1.dockerfile" ]; then
+    echo "Error: './dockerfiles/$1.dockerfile' does not exists. Cannot build."
+    exit 1
+  fi
+  TAG="chirvo/$(echo "$1" | sed -e 's/[a-zA-Z].*\/[0-9][0-9]-//'):latest"
+  echo -n "Building image for '$1' with tag '$TAG': "
+  docker build --tag "$TAG" -f "./dockerfiles/$1.dockerfile" .
+  [ $? -eq 0 ] && echo "done." || echo "error."
+}
+_image_rm() {
+  #$1 Image
+  TAG="chirvo/$(echo "$1" | sed -e 's/[a-zA-Z].*\/[0-9][0-9]-//'):latest"
+  echo -n "Removing image for '$1' with tag '$TAG': "
+  docker image rm "$TAG"
+  [ $? -eq 0 ] && echo "done." || echo "error."
+}
+
+case "$1" in
+clean)
+  echo "Pruning containers..."
+  docker container prune
+  for IMAGE in $BASE_IMAGES; do
+    _image_rm "base/$IMAGE"
+  done
+  for IMAGE in $SERVICE_IMAGES; do
+    _image_rm "services/$IMAGE"
+  done
+  ;;
+base)
+  for IMAGE in $BASE_IMAGES; do
+    _build "base/$IMAGE"
+  done
+  ;;
+all)
+  for IMAGE in $BASE_IMAGES; do
+    _build "base/$IMAGE"
+  done
+  for IMAGE in $SERVICE_IMAGES; do
+    _build "services/$IMAGE"
+  done
+  ;;
+*)
+  for IMAGE in $BASE_IMAGES; do
+    if [ "$1" == "$IMAGE" ]; then
+      echo "Found 'base/$1.'"
+      _build "base/$1"
+      exit 0
+    fi
+  done
+  for IMAGE in $SERVICE_IMAGES; do
+    if [ "$1" == "$IMAGE" ]; then
+      echo "Found 'services/$1.'"
+      _build "services/$1"
+      exit 0
+    fi
+  done
+  echo "Usage: $0 {clean|base|all|<image>}"
+  echo ""
+  echo "Available Base images: $BASE_IMAGES".
+  echo "Available Service images: $SERVICE_IMAGES".
+  echo ""
+  exit 1
+  ;;
+esac
+exit 0

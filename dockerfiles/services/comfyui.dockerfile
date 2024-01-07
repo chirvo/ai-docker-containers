@@ -1,4 +1,4 @@
-FROM chirvo/base-pytorch:latest
+FROM chirvo/pytorch:latest
 
 ARG GIT_URI=https://github.com/comfyanonymous/ComfyUI.git
 ARG DEST_DIR=ComfyUI

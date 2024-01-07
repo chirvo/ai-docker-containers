@@ -1,4 +1,4 @@
-FROM chirvo/base-ubuntu:latest
+FROM chirvo/ubuntu:latest
 
 ENV USE_CUDA=0
 #################

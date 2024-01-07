@@ -1,4 +1,4 @@
-FROM chirvo/base-pytorch:latest
+FROM chirvo/pytorch:latest
 
 ARG GIT_URI=https://github.com/AUTOMATIC1111/stable-diffusion-webui
 ARG DEST_DIR=stable-diffusion-webui

@@ -1,6 +1,6 @@
 services:
   a1111:
-    image: chirvo/ai-a1111:latest
+    image: chirvo/services/a1111:latest
     container_name: a1111
     # restart: unless-stopped
     group_add:
@@ -19,7 +19,7 @@ services:
     network_mode: host
 
   comfyui:
-    image: chirvo/ai-comfyui:latest
+    image: chirvo/services/comfyui:latest
     container_name: comfyui
     # restart: unless-stopped
     group_add:
@@ -40,7 +40,7 @@ services:
     network_mode: host
 
   ollama:
-    image: chirvo/ai-ollama:latest
+    image: chirvo/services/ollama:latest
     container_name: ollama
     # restart: unless-stopped
     group_add:
