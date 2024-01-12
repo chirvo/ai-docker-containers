@@ -1,20 +1,9 @@
 FROM chirvo/pytorch:latest
 
-ARG GIT_URI=https://github.com/comfyanonymous/ComfyUI.git
-ARG DEST_DIR=ComfyUI
-
 WORKDIR /app
 
-#Get the sources and copy them over the premounted volume
-RUN git clone ${GIT_URI} ${DEST_DIR}.tmp
-RUN cp -fnrv  ${DEST_DIR}.tmp ${DEST_DIR}
-RUN rm -rf ${DEST_DIR}.tmp
-
-#venv
-RUN python3 -m venv venv --system-site-packages
-ENV PATH=/app/venv:${PATH}
-#reqs
-WORKDIR /app/${DEST_DIR}
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git comfyui
+WORKDIR /app/comfyui
 RUN pip3 install -r requirements.txt
 
 EXPOSE 8188/tcp

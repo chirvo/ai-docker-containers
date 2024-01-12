@@ -10,13 +10,12 @@ services:
       - '/dev/kfd:/dev/kfd'
     volumes:
       - ./volumes/a1111:/app
-      - /tmp/output/a1111:/app/stable-diffusion-webui/outputs
-      - /mnt/fatboy/chirvo/sd/models:/app/stable-diffusion-webui/models
-      - /mnt/fatboy/chirvo/sd/embeddings:/app/stable-diffusion-webui/embeddings
-      - /mnt/fatboy/chirvo/sd/extensions/sd-webui-controlnet/models:/app/stable-diffusion-webui/extensions/sd-webui-controlnet/models
+      - /tmp/output/a1111:/app/a1111/outputs
+      - /mnt/fatboy/chirvo/sd/models:/app/a1111/models
+      - /mnt/fatboy/chirvo/sd/embeddings:/app/a1111/embeddings
+      - /mnt/fatboy/chirvo/sd/extensions/sd-webui-controlnet/models:/app/a1111/extensions/sd-webui-controlnet/models
     ports:
       - "7860:7860"
-    network_mode: host
 
   comfyui:
     image: chirvo/services/comfyui:latest
@@ -29,15 +28,14 @@ services:
       - '/dev/kfd:/dev/kfd'
     volumes:
       - ./volumes/comfyui:/app
-      - /mnt/fatboy/chirvo/sd/models/Stable-diffusion:/app/ComfyUI/models/checkpoints
-      - /mnt/fatboy/chirvo/sd/models/VAE:/app/ComfyUI/models/vae
-      - /mnt/fatboy/chirvo/sd/models/VAE-approx:/app/ComfyUI/models/vae_approx
-      - /mnt/fatboy/chirvo/sd/models/Lora:/app/ComfyUI/models/loras
-      - /mnt/fatboy/chirvo/sd/embeddings:/app/ComfyUI/models/embeddings
-      - /tmp/output/comfyui:/app/ComfyUI/output
+      - /mnt/fatboy/chirvo/sd/models/Stable-diffusion:/app/comfyui/models/checkpoints
+      - /mnt/fatboy/chirvo/sd/models/VAE:/app/comfyui/models/vae
+      - /mnt/fatboy/chirvo/sd/models/VAE-approx:/app/comfyui/models/vae_approx
+      - /mnt/fatboy/chirvo/sd/models/Lora:/app/comfyui/models/loras
+      - /mnt/fatboy/chirvo/sd/embeddings:/app/comfyui/models/embeddings
+      - /tmp/output/comfyui:/app/comfyui/output
     ports:
       - "8188:8188"
-    network_mode: host
 
   ollama:
     image: chirvo/services/ollama:latest
@@ -62,9 +60,8 @@ services:
     depends_on:
       - ollama
     ports:
-      - 3000:3000
+      - 8080:8080
     environment:
       - "OLLAMA_API_BASE_URL=http://ollama:11434/api"
-    network_mode: host
-    # extra_hosts:
-    #   - host.docker.internal:host-gateway
+    extra_hosts:
+      - host.docker.internal:host-gateway
