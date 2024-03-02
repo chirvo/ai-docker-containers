@@ -10,9 +10,9 @@ services:
       - '/dev/kfd:/dev/kfd'
     volumes:
       - /tmp/output/a1111:/app/outputs
-      - /mnt/fatboy/chirvo/sd/models:/app/models
-      - /mnt/fatboy/chirvo/sd/embeddings:/app/embeddings
-      - /mnt/fatboy/chirvo/sd/extensions/sd-webui-controlnet/models:/app/extensions/sd-webui-controlnet/models
+      - /mnt/fatboys/chirvo/sd/models:/app/models
+      - /mnt/fatboys/chirvo/sd/embeddings:/app/embeddings
+      - /mnt/fatboys/chirvo/sd/extensions/sd-webui-controlnet/models:/app/extensions/sd-webui-controlnet/models
     ports:
       - "7860:7860"
 
@@ -26,11 +26,11 @@ services:
       - '/dev/dri:/dev/dri'
       - '/dev/kfd:/dev/kfd'
     volumes:
-      - /mnt/fatboy/chirvo/sd/models/Stable-diffusion:/app/models/checkpoints
-      - /mnt/fatboy/chirvo/sd/models/VAE:/app/models/vae
-      - /mnt/fatboy/chirvo/sd/models/VAE-approx:/app/models/vae_approx
-      - /mnt/fatboy/chirvo/sd/models/Lora:/app/models/loras
-      - /mnt/fatboy/chirvo/sd/embeddings:/app/models/embeddings
+      - /mnt/fatboys/chirvo/sd/models/Stable-diffusion:/app/models/checkpoints
+      - /mnt/fatboys/chirvo/sd/models/VAE:/app/models/vae
+      - /mnt/fatboys/chirvo/sd/models/VAE-approx:/app/models/vae_approx
+      - /mnt/fatboys/chirvo/sd/models/Lora:/app/models/loras
+      - /mnt/fatboys/chirvo/sd/embeddings:/app/models/embeddings
       - /tmp/output/comfyui:/app/output
     ports:
       - "8188:8188"
@@ -45,7 +45,7 @@ services:
       - '/dev/dri:/dev/dri'
       - '/dev/kfd:/dev/kfd'
     volumes:
-      - /mnt/fatboy/chirvo/tortoise-tts/models:/models
+      - /mnt/fatboys/chirvo/tortoise-tts/models:/models
     ports:
       - "8188:8188"
 
@@ -74,7 +74,7 @@ services:
       - '/dev/dri:/dev/dri'
       - '/dev/kfd:/dev/kfd'
     volumes:
-      - /mnt/fatboy/chirvo/ollama:/root/.ollama
+      - /mnt/fatboys/chirvo/ollama:/root/.ollama
     ports:
       - "11434:11434"
 
