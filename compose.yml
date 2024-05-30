@@ -78,12 +78,27 @@ services:
     ports:
       - "11434:11434"
 
-  ollama-webui:
-    image: ghcr.io/ollama-webui/ollama-webui:main
-    container_name: ollama-webui
+  # ollama-webui:
+  #   image: ghcr.io/ollama-webui/ollama-webui:main
+  #   container_name: ollama-webui
+  #   # restart: unless-stopped
+  #   volumes:
+  #     - ./volumes/ollama-webui:/app/backend/data
+  #   depends_on:
+  #     - ollama
+  #   ports:
+  #     - 8080:8080
+  #   environment:
+  #     - "OLLAMA_API_BASE_URL=http://ollama:11434/api"
+  #   extra_hosts:
+  #     - host.docker.internal:host-gateway
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
     # restart: unless-stopped
     volumes:
-      - ./volumes/ollama-webui:/app/backend/data
+      - ./volumes/open-webui:/app/backend/data
     depends_on:
       - ollama
     ports:
@@ -92,3 +107,10 @@ services:
       - "OLLAMA_API_BASE_URL=http://ollama:11434/api"
     extra_hosts:
       - host.docker.internal:host-gateway
+
+  # https://containrrr.dev/watchtower/
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
