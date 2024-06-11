@@ -35,35 +35,6 @@ services:
     ports:
       - "8188:8188"
 
-  tortoise-tts:
-    image: chirvo/services/tortoise-tts:latest
-    container_name: tortoise-tts
-    # restart: unless-stopped
-    group_add:
-      - video
-    devices:
-      - '/dev/dri:/dev/dri'
-      - '/dev/kfd:/dev/kfd'
-    volumes:
-      - /mnt/fatboys/chirvo/tortoise-tts/models:/models
-    ports:
-      - "8188:8188"
-
-  tts-generation-webui:
-    image: chirvo/services/tts-generation-webui
-    container_name: tts-generation-webui
-    # restart: unless-stopped
-    volumes:
-      - ./volumes/ollama-webui:/app/backend/data
-    depends_on:
-      - ollama
-    ports:
-      - 8080:8080
-    environment:
-      - "OLLAMA_API_BASE_URL=http://ollama:11434/api"
-    extra_hosts:
-      - host.docker.internal:host-gateway
-
   ollama:
     image: chirvo/services/ollama:latest
     container_name: ollama
@@ -77,21 +48,6 @@ services:
       - /mnt/fatboys/chirvo/ollama:/root/.ollama
     ports:
       - "11434:11434"
-
-  # ollama-webui:
-  #   image: ghcr.io/ollama-webui/ollama-webui:main
-  #   container_name: ollama-webui
-  #   # restart: unless-stopped
-  #   volumes:
-  #     - ./volumes/ollama-webui:/app/backend/data
-  #   depends_on:
-  #     - ollama
-  #   ports:
-  #     - 8080:8080
-  #   environment:
-  #     - "OLLAMA_API_BASE_URL=http://ollama:11434/api"
-  #   extra_hosts:
-  #     - host.docker.internal:host-gateway
 
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
