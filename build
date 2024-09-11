@@ -42,7 +42,6 @@ _image_rm() {
 
 # Main script execution based on provided input
 case "$1" in
-
 clean)
   # Remove all Docker containers and images matching the patterns specified in $BASE_IMAGES and $SERVICE_IMAGES
   docker container prune
@@ -53,14 +52,12 @@ clean)
     _image_rm "services/$IMAGE"
   done
   ;;
-
 base)
   # Build all base images listed in $BASE_IMAGES
   for IMAGE in $BASE_IMAGES; do
     _build "base/$IMAGE" $2
   done
   ;;
-
 all)
   # Build both the base and service images listed in $BASE_IMAGES and $SERVICE_IMAGES
   for IMAGE in $BASE_IMAGES; do
@@ -70,21 +67,24 @@ all)
     _build "services/$IMAGE" $2
   done
   ;;
-
 *)
   # Build a specific image based on the provided name (either base or service)
-  if [ "$1" == "$IMAGE" ]; then
-    echo "Found '$1'."
-    _build "base/$1" $2
-    exit 0
+  if [ "$1" != "" ]; then
+    for IMAGE in $BASE_IMAGES; do
+      if [ "$1" == "$IMAGE" ]; then
+        echo "Found '$1'."
+        _build "base/$1" $2
+        exit 0
+      fi
+    done
+    for IMAGE in $SERVICE_IMAGES; do
+      if [ "$1" == "$IMAGE" ]; then
+        echo "Found 'services/$1'."
+        _build "services/$1" $2
+        exit 0
+      fi
+    done
   fi
-  for IMAGE in $SERVICE_IMAGES; do
-    if [ "$1" == "$IMAGE" ]; then
-      echo "Found 'services/$1'."
-      _build "services/$1" $2
-      exit 0
-    fi
-  done
 
   # Display usage instructions and list of available images
   echo "Usage: $0 {clean|base|all|<image>}"
