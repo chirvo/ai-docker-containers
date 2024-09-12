@@ -1,10 +1,15 @@
 FROM chirvo/rocm:latest
 
 WORKDIR /root
-RUN wget https://ollama.com/download/ollama-linux-amd64
-RUN mv ollama-linux-amd64 ollama
-RUN chmod 755 ollama
+# Base ollama installation
+RUN curl -L https://ollama.com/download/ollama-linux-amd64.tgz -o ollama-linux-amd64.tgz
+RUN tar -C /usr -xzf ollama-linux-amd64.tgz
+RUN rm ollama-linux-amd64.tgz
+# ollama ROCm support
+RUN curl -L https://ollama.com/download/ollama-linux-amd64-rocm.tgz -o ollama-linux-amd64-rocm.tgz
+RUN tar -C /usr -xzf ollama-linux-amd64-rocm.tgz
+RUN rm ollama-linux-amd64-rocm.tgz
 
-ENV OLLAMA_HOST 0.0.0.0:11434
+ENV OLLAMA_HOST=0.0.0.0:11434
 EXPOSE 11434/tcp
-CMD /root/ollama serve
+CMD ["/usr/bin/ollama", "serve"]
