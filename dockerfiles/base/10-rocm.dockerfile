@@ -12,11 +12,10 @@ ENV USE_CUDA=0
 #ENV HSA_OVERRIDE_GFX_VERSION="11.0.0"
 #ENV PYTORCH_ROCM_ARCH="gfx1100"
 
-
-RUN wget https://repo.radeon.com/amdgpu-install/6.0/ubuntu/jammy/amdgpu-install_6.0.60000-1_all.deb \
-  && apt install -y ./amdgpu-install_6.0.60000-1_all.deb \
+RUN wget https://repo.radeon.com/amdgpu-install/6.2/ubuntu/jammy/amdgpu-install_6.2.60200-1_all.deb \
+  && apt install -y ./amdgpu-install_6.2.60200-1_all.deb \
   && amdgpu-install -y --no-dkms --usecase=rocm,hip,mllib --no-32 \
-  && rm ./amdgpu-install_6.0.60000-1_all.deb
+  && rm ./amdgpu-install_6.2.60200-1_all.deb
 RUN apt-get update && apt-get -y dist-upgrade \
   && apt-get install -y hip-rocclr llvm-amdgpu \
   && apt-get clean
