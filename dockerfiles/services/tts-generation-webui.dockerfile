@@ -1,4 +1,4 @@
-FROM chirvo/pytorch:latest
+FROM chirvo/pytorch_rocm:latest
 
 # Install Pre-reqs
 RUN apt-get update && apt-get install --no-install-recommends -y \

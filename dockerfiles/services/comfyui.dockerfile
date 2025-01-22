@@ -1,4 +1,4 @@
-FROM chirvo/pytorch:latest
+FROM chirvo/pytorch_rocm:latest
 
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /app
 WORKDIR /app

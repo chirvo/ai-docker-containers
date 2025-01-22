@@ -1,4 +1,4 @@
-FROM chirvo/rocm:latest
+FROM chirvo/pytorch_rocm:latest
 
 WORKDIR /root
 # Base ollama installation
