@@ -1,4 +1,20 @@
 services:
+  forge:
+    image: chirvo/services/forge:latest
+    container_name: forge
+    # restart: unless-stopped
+    group_add:
+      - video
+    devices:
+      - '/dev/dri:/dev/dri'
+      - '/dev/kfd:/dev/kfd'
+    volumes:
+      - /tmp/output/forge:/app/outputs
+      - /mnt/fatboys/chirvo/sd/models:/app/models
+      - /mnt/fatboys/chirvo/sd/embeddings:/app/embeddings
+      - /mnt/fatboys/chirvo/sd/extensions/sd-webui-controlnet/models:/app/extensions/sd-webui-controlnet/models
+    ports:
+      - "7860:7860"
   a1111:
     image: chirvo/services/a1111:latest
     container_name: a1111
@@ -36,8 +52,8 @@ services:
       - "8188:8188"
 
   ollama:
-    image: ollama/ollama:rocm
-    # image: chirvo/services/ollama:latest
+    # image: ollama/ollama:rocm
+    image: chirvo/services/ollama:latest
     container_name: ollama
     # restart: unless-stopped
     group_add:
@@ -49,6 +65,32 @@ services:
       - /mnt/fatboys/chirvo/ollama:/root/.ollama
     ports:
       - "11434:11434"
+
+  qdrant:
+    image: qdrant/qdrant
+    container_name: qdrant
+    restart: unless-stopped
+    ports:
+      - 6333:6333
+    volumes:
+      - ./volumes/qdrant_storage:/qdrant/storage
+      
+  postgres:
+    image: postgres:17-alpine
+    # restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=pgsqlUsr
+      - POSTGRES_PASSWORD=pgsqlPwd
+      - POSTGRES_DB=ragtool
+    volumes:
+      - ./volumes/postgres_storage:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -h localhost -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   tika:
     image: apache/tika:latest
