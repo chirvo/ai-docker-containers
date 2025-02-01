@@ -1,5 +1,8 @@
 FROM chirvo/ubuntu:latest
 
+# FIXME: Probably the whole base images generation can be replaced by the docker images
+#        provided at https://hub.docker.com/r/rocm/pytorch
+
 ENV USE_CUDA=0
 #################
 # Common envvars

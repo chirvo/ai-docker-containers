@@ -15,6 +15,7 @@ services:
       - /mnt/fatboys/chirvo/sd/extensions/sd-webui-controlnet/models:/app/extensions/sd-webui-controlnet/models
     ports:
       - "7860:7860"
+    shm_size: 2g
   a1111:
     image: chirvo/services/a1111:latest
     container_name: a1111
@@ -31,6 +32,7 @@ services:
       - /mnt/fatboys/chirvo/sd/extensions/sd-webui-controlnet/models:/app/extensions/sd-webui-controlnet/models
     ports:
       - "7860:7860"
+    shm_size: 2g
 
   comfyui:
     image: chirvo/services/comfyui:latest
@@ -50,6 +52,7 @@ services:
       - /tmp/output/comfyui:/app/output
     ports:
       - "8188:8188"
+    shm_size: 2g
 
   ollama:
     # image: ollama/ollama:rocm
@@ -65,6 +68,7 @@ services:
       - /mnt/fatboys/chirvo/ollama:/root/.ollama
     ports:
       - "11434:11434"
+    shm_size: 2g
 
   qdrant:
     image: qdrant/qdrant
@@ -74,6 +78,7 @@ services:
       - 6333:6333
     volumes:
       - ./volumes/qdrant_storage:/qdrant/storage
+    shm_size: 2g
       
   postgres:
     image: postgres:17-alpine
@@ -91,6 +96,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    shm_size: 2g
 
   tika:
     image: apache/tika:latest
@@ -98,9 +104,10 @@ services:
     # restart: unless-stopped
     ports:
       - 9998:9998
+    shm_size: 2g
 
   open-webui:
-    image: ghcr.io/open-webui/open-webui:latest
+    image: ghcr.io/open-webui/open-webui:main
     container_name: open-webui
     # restart: unless-stopped
     volumes:
@@ -114,6 +121,7 @@ services:
       - "OLLAMA_API_BASE_URL=http://ollama:11434/api"
     extra_hosts:
       - host.docker.internal:host-gateway
+    shm_size: 2g
 
   # https://containrrr.dev/watchtower/
   watchtower:
