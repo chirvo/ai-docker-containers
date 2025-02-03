@@ -1,0 +1,20 @@
+services:
+  comfyui:
+    image: chirvo/services/comfyui:latest
+    container_name: comfyui
+    # restart: unless-stopped
+    group_add:
+      - video
+    devices:
+      - '/dev/dri:/dev/dri'
+      - '/dev/kfd:/dev/kfd'
+    volumes:
+      - /mnt/fatboys/chirvo/sd/models/Stable-diffusion:/app/models/checkpoints
+      - /mnt/fatboys/chirvo/sd/models/VAE:/app/models/vae
+      - /mnt/fatboys/chirvo/sd/models/VAE-approx:/app/models/vae_approx
+      - /mnt/fatboys/chirvo/sd/models/Lora:/app/models/loras
+      - /mnt/fatboys/chirvo/sd/embeddings:/app/models/embeddings
+      - /tmp/output/comfyui:/app/output
+    ports:
+      - "8188:8188"
+    shm_size: 2g

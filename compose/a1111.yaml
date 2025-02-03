@@ -1,0 +1,18 @@
+services:
+  a1111:
+    image: chirvo/services/a1111:latest
+    container_name: a1111
+    # restart: unless-stopped
+    group_add:
+      - video
+    devices:
+      - '/dev/dri:/dev/dri'
+      - '/dev/kfd:/dev/kfd'
+    volumes:
+      - /tmp/output/a1111:/app/outputs
+      - /mnt/fatboys/chirvo/sd/models:/app/models
+      - /mnt/fatboys/chirvo/sd/embeddings:/app/embeddings
+      - /mnt/fatboys/chirvo/sd/extensions/sd-webui-controlnet/models:/app/extensions/sd-webui-controlnet/models
+    ports:
+      - "7860:7860"
+    shm_size: 2g
