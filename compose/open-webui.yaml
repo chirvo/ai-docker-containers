@@ -50,7 +50,7 @@ services:
     shm_size: 2g
         
   openedai-speech:
-    image: ghcr.io/matatonic/openedai-speech
+    image: chirvo/services/openedai-speech:latest
     container_name: openedai-speech
     ports:
       - "8000:8000"
