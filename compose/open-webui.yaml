@@ -2,7 +2,7 @@ services:
   ollama:
     image: chirvo/services/ollama:latest
     container_name: ollama
-    # restart: unless-stopped
+    restart: unless-stopped
     group_add:
       - video
     devices:
@@ -15,9 +15,9 @@ services:
     shm_size: 2g
 
   tika:
-    image: apache/tika:latest
+    image: apache/tika:latest-full
     container_name: tika
-    # restart: unless-stopped
+    restart: unless-stopped
     ports:
       - 9998:9998
     shm_size: 2g
@@ -25,9 +25,9 @@ services:
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
     container_name: open-webui
-    # restart: unless-stopped
+    restart: unless-stopped
     volumes:
-      - ./volumes/open-webui:/app/backend/data
+      - ../volumes/open-webui:/app/backend/data
     depends_on:
       - ollama
       - tika
