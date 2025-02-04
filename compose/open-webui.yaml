@@ -22,10 +22,10 @@ services:
       - 9998:9998
     shm_size: 2g
 
-  # FIXME: Won't work
+  # FIXME: Not working.
   redis:
     image: valkey/valkey:8.0.1-alpine
-    container_name: redis-valkey
+    container_name: redis
     volumes:
       - ../volumes/open-webui_redis:/data
     command: "valkey-server --save 30 1"
@@ -47,6 +47,36 @@ services:
       options:
         max-size: "1m"
         max-file: "1"
+    shm_size: 2g
+        
+  openedai-speech:
+    image: ghcr.io/matatonic/openedai-speech
+    container_name: openedai-speech
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../openedai-speech/voices:/app/voices
+      - ../openedai-speech/config:/app/config
+    restart: unless-stopped
+    cap_add:
+      - SYS_PTRACE
+    devices:
+      - /dev/kfd
+      - /dev/dri
+    security_opt:
+      - seccomp=unconfined
+    group_add:
+      - video
+      - audio
+    ipc: host
+    shm_size: 2g
+    environment:
+      - USE_ROCM=1
+      # - TTS_HOME=voices
+      - HF_HOME=voices
+      # - PRELOAD_MODEL=xtts
+      - PRELOAD_MODEL=xtts_v2.0.2
+      # - EXTRA_ARGS=--log-level DEBUG --unload-timer 300
 
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
@@ -64,7 +94,7 @@ services:
       - "OLLAMA_API_BASE_URL=http://ollama:11434/api"
       - ENABLE_WEBSOCKET_SUPPORT="true"
       - WEBSOCKET_MANAGER="redis"
-      # - WEBSOCKET_REDIS_URL="redis://redis:6379/1"
+      - WEBSOCKET_REDIS_URL="redis://redis:6379/1"
     extra_hosts:
       - host.docker.internal:host-gateway
     shm_size: 2g
