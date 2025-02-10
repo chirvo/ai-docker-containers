@@ -1,0 +1,18 @@
+services:
+  forge:
+    image: chirvo/services/forge:latest
+    container_name: forge
+    # restart: unless-stopped
+    group_add:
+      - video
+    devices:
+      - '/dev/dri:/dev/dri'
+      - '/dev/kfd:/dev/kfd'
+    volumes:
+      - /tmp/output/forge:/app/outputs
+      - /mnt/fatboys/chirvo/sd/models:/app/models
+      - /mnt/fatboys/chirvo/sd/embeddings:/app/embeddings
+      - /mnt/fatboys/chirvo/sd/extensions/sd-webui-controlnet/models:/app/extensions/sd-webui-controlnet/models
+    ports:
+      - "7860:7860"
+    shm_size: 2g

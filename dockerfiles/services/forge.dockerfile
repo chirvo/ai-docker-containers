@@ -1,19 +1,15 @@
-# FIXME: Installation instructions fro the GH repo won't work
-FROM chirvo/services/a1111
+FROM rocm/pytorch:rocm6.3.2_ubuntu22.04_py3.10_pytorch_release_2.4.0
 
+RUN curl -L https://github.com/lllyasviel/stable-diffusion-webui-forge/archive/refs/tags/latest.tar.gz > latest.tar.gz
+RUN tar zxf latest.tar.gz && mv stable-diffusion-webui-forge-latest /app && rm latest.tar.gz
 WORKDIR /app
-RUN git config user.email "me@chirvo.com"
-RUN git config user.name "Chirvo"
-RUN git config pull.rebase true
-RUN git fetch --all --tags
-RUN git remote add forge https://github.com/lllyasviel/stable-diffusion-webui-forge
-RUN git checkout --detach tags/v1.10.1
-RUN git branch lllyasviel/main
-RUN git checkout lllyasviel/main
-RUN git fetch forge
-RUN git branch -u forge/main
-# RUN git rm CHANGELOG.md
-# RUN git commit -a -m "rm CHANGELOG.md"
-RUN git pull -Xignore-space-at-eol
+RUN pip install transformers insightface
+RUN cat requirements.txt | grep -v transformers > /tmp/requirements.txt
+RUN pip install -r /tmp/requirements.txt
 
-#CMD python3 launch.py --listen --precision full --no-half --enable-insecure-extension-access
+# For 6700, 6600 and maybe other RDNA2 or older:
+#ENV HSA_OVERRIDE_GFX_VERSION=10.3.0D
+# For AMD 7600 and maybe other RDNA3 cards:
+#ENV HSA_OVERRIDE_GFX_VERSION=11.0.0
+EXPOSE 7860/tcp
+CMD python3 launch.py --listen --precision full --no-half --enable-insecure-extension-access
