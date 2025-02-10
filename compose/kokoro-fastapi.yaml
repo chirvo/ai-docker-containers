@@ -1,12 +1,10 @@
-name: kokoro-tts
+name: kokoro-fastapi
 services:
   kokoro-tts:
-    image: chirvo/services/kokoro-tts-fastapi
-    container_name: kokoro-tts
+    image: chirvo/services/kokoro-tts-api
+    container_name: kokoro-tts-api
     # volumes:
       # - ../volumes/kokoro-tts/voices:/app/api/src/voices  # Mount voices for persistence
-    ports:
-      - "8880:8880"
     environment:
       - PYTHONPATH=/app:/app/models
       - TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1
@@ -23,11 +21,13 @@ services:
     ipc: host
 
   # Gradio UI service
-  gradio-ui:
+  gradio-tts-ui:
     image: chirvo/services/kokoro-tts-ui
-    container_name: kokoro-ui
+    container_name: kokoro-tts-ui
     ports:
       - "7860:7860"
+    depends_on:
+      - kokoro-tts-api
     volumes:
       - ../volumes/kokoro-tts/data:/app/ui/data
     environment:
