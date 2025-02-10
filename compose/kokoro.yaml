@@ -1,0 +1,37 @@
+name: kokoro-tts
+services:
+  kokoro-tts:
+    image: chirvo/services/kokoro-tts-fastapi
+    container_name: kokoro-tts
+    # volumes:
+      # - ../volumes/kokoro-tts/voices:/app/api/src/voices  # Mount voices for persistence
+    ports:
+      - "8880:8880"
+    environment:
+      - PYTHONPATH=/app:/app/models
+      - TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1
+      # This suppresses excessive warning logs. Probably not a good idea to suppress, but no other solution found
+      # (see https://github.com/ROCm/MIOpen/issues/2981)
+      - MIOPEN_LOG_LEVEL=3
+    devices:
+      - /dev/kfd:/dev/kfd
+      - /dev/dri:/dev/dri
+    security_opt:
+      - seccomp=unconfined
+    group_add:
+      - video
+    ipc: host
+
+  # Gradio UI service
+  gradio-ui:
+    image: chirvo/services/kokoro-tts-ui
+    container_name: kokoro-ui
+    ports:
+      - "7860:7860"
+    volumes:
+      - ../volumes/kokoro-tts/data:/app/ui/data
+    environment:
+      # - PYTHONUNBUFFERED=1  # Ensure Python output is not buffered
+      - DISABLE_LOCAL_SAVING=false  # Set to 'true' to disable local saving and hide file view
+      - API_HOST=kokoro-tts  # Set TTS service URL
+      - API_PORT=8880  # Set TTS service PORT

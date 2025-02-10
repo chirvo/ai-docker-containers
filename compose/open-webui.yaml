@@ -6,8 +6,10 @@ services:
     group_add:
       - video
     devices:
-      - '/dev/dri:/dev/dri'
-      - '/dev/kfd:/dev/kfd'
+      - /dev/dri
+      - /dev/kfd
+    security_opt:
+      - seccomp=unconfined
     volumes:
       - /mnt/fatboys/chirvo/ollama:/root/.ollama
     ports:
@@ -24,10 +26,10 @@ services:
 
   # FIXME: Not working.
   redis:
-    image: valkey/valkey:8.0.1-alpine
+    image: valkey/valkey:latest
     container_name: redis
     volumes:
-      - ../volumes/open-webui_redis:/data
+      - ../volumes/redis:/data
     command: "valkey-server --save 30 1"
     healthcheck:
       test: "[ $$(valkey-cli ping) = 'PONG' ]"
@@ -49,34 +51,20 @@ services:
         max-file: "1"
     shm_size: 2g
         
-  openedai-speech:
-    image: chirvo/services/openedai-speech:latest
-    container_name: openedai-speech
-    ports:
-      - "8000:8000"
-    volumes:
-      - ../openedai-speech/voices:/app/voices
-      - ../openedai-speech/config:/app/config
+  kokoro-tts:
+    image: chirvo/services/kokoro:latest
+    container_name: kokoro
     restart: unless-stopped
-    cap_add:
-      - SYS_PTRACE
-    devices:
-      - /dev/kfd
-      - /dev/dri
-    security_opt:
-      - seccomp=unconfined
     group_add:
       - video
-      - audio
-    ipc: host
+    devices:
+      - /dev/dri
+      - /dev/kfd
+    security_opt:
+      - seccomp=unconfined
+    ports:
+      - 8880:8880
     shm_size: 2g
-    environment:
-      - USE_ROCM=1
-      # - TTS_HOME=voices
-      - HF_HOME=voices
-      # - PRELOAD_MODEL=xtts
-      - PRELOAD_MODEL=xtts_v2.0.2
-      # - EXTRA_ARGS=--log-level DEBUG --unload-timer 300
 
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
@@ -86,8 +74,8 @@ services:
       - ../volumes/open-webui:/app/backend/data
     depends_on:
       - ollama
-      # - redis
       - tika
+      - kokoro-tts
     ports:
       - 8080:8080
     environment:
@@ -95,7 +83,7 @@ services:
       - ENABLE_WEBSOCKET_SUPPORT="true"
       - WEBSOCKET_MANAGER="redis"
       - WEBSOCKET_REDIS_URL="redis://redis:6379/1"
-    extra_hosts:
-      - host.docker.internal:host-gateway
+    # extra_hosts:
+    #   - host.docker.internal:host-gateway
     shm_size: 2g
 
