@@ -12,4 +12,4 @@ RUN pip install -r /tmp/requirements.txt
 # For AMD 7600 and maybe other RDNA3 cards:
 #ENV HSA_OVERRIDE_GFX_VERSION=11.0.0
 EXPOSE 7860/tcp
-CMD python3 launch.py --listen --precision full --no-half --enable-insecure-extension-access
+CMD ["python3", "launch.py", "--listen", "--precision", "full", "--no-half", "--enable-insecure-extension-access"]

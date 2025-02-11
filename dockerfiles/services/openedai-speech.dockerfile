@@ -23,4 +23,4 @@ ENV TTS_HOME=voices
 ENV HF_HOME=voices
 ENV COQUI_TOS_AGREED=1
 
-CMD bash startup.sh
+CMD ["bash", "startup.sh"]
