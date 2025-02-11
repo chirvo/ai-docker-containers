@@ -1,8 +1,10 @@
 name: kokoro-fastapi
 services:
-  kokoro-tts:
+  kokoro-tts-api:
     image: chirvo/services/kokoro-tts-api
     container_name: kokoro-tts-api
+    ports:
+      - "8880:8880"
     # volumes:
       # - ../volumes/kokoro-tts/voices:/app/api/src/voices  # Mount voices for persistence
     environment:
@@ -19,19 +21,3 @@ services:
     group_add:
       - video
     ipc: host
-
-  # Gradio UI service
-  gradio-tts-ui:
-    image: chirvo/services/kokoro-tts-ui
-    container_name: kokoro-tts-ui
-    ports:
-      - "7860:7860"
-    depends_on:
-      - kokoro-tts-api
-    volumes:
-      - ../volumes/kokoro-tts/data:/app/ui/data
-    environment:
-      # - PYTHONUNBUFFERED=1  # Ensure Python output is not buffered
-      - DISABLE_LOCAL_SAVING=false  # Set to 'true' to disable local saving and hide file view
-      - API_HOST=kokoro-tts  # Set TTS service URL
-      - API_PORT=8880  # Set TTS service PORT
