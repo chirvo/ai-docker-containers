@@ -1,4 +1,4 @@
-FROM rocm/pytorch:rocm6.3.2_ubuntu22.04_py3.10_pytorch_release_2.4.0
+FROM rocm/pytorch:rocm6.2.2_ubuntu22.04_py3.10_pytorch_2.5.1
 
 # Set environment variables
 ENV DOWNLOAD_MODEL=true
@@ -6,6 +6,7 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app:/app/models
 ENV PATH="/app/.venv/bin:$PATH"
 ENV UV_LINK_MODE=copy
+ENV USE_ROCM=true
 ENV TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1
 
 # Base dependencies
@@ -29,27 +30,20 @@ WORKDIR /app
 RUN git remote add upstream https://github.com/bgs4free/Kokoro-FastAPI.git && \
   git fetch upstream && \
   git checkout upstream/add-rocm-support && \
-  git merge --strategy ours master && \
-  mkdir -p /app/api/src/models/v1_0 /app/api/src/voices/V1_0
-
-# Download and extract models (test)
-RUN python docker/scripts/download_model.py --output api/src/models/v1_0
-
-# Download and extract voice models
-WORKDIR /app/api/src/voices
-RUN <<EOF
-for VOICE_URL in $(wget -qO- https://huggingface.co/hexgrad/Kokoro-82M/tree/main/voices | grep -Eo "/hexgrad/[a-zA-Z0-9./?=_-]*.pt" | sort -u | grep resolve)
-do
-  wget https://huggingface.co$VOICE_URL;
-  sleep 1
-done
-EOF
-
-# Switch back to app directory
-WORKDIR /app
+  git switch -c add-rocm-support && \
+  git rm MigrationWorkingNotes.md uv.lock docker/rocm/uv.lock && \
+  git commit -a -m "Remove MigrationWorkingNotes.md and uv.lock" && \
+  git checkout master && \
+  git merge add-rocm-support
 
 # Install dependencies
 RUN --mount=type=cache,target=/root/.cache/uv uv venv && uv sync --extra rocm --no-install-project
 
+# Install project
+RUN --mount=type=cache,target=/root/.cache/uv pip install -e ".[rocm]" 
+
+# Download and extract models (test)
+RUN python docker/scripts/download_model.py --output api/src/models/v1_0
+
 # Run FastAPI server
-CMD ["uv", "run", "python", "-m", "uvicorn", "api.src.main:app", "--host", "0.0.0.0", "--port", "8880", "--log-level", "debug"]
+CMD ["uv", "run", "--extra", "rocm", "python", "-m", "uvicorn", "api.src.main:app", "--host", "0.0.0.0", "--port", "8880", "--log-level", "debug"]
