@@ -51,19 +51,25 @@ services:
         max-file: "1"
     shm_size: 2g
         
+
   kokoro-tts:
-    image: chirvo/services/kokoro:latest
-    container_name: kokoro
+    image: chirvo/services/kokoro-tts-api:latest
+    container_name: kokoro-tts
     restart: unless-stopped
-    group_add:
-      - video
+    ports:
+      - "8880:8880"
+    environment:
+      - PYTHONPATH=/app:/app/models
+      - TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1
+      - MIOPEN_LOG_LEVEL=3
     devices:
       - /dev/dri
       - /dev/kfd
     security_opt:
       - seccomp=unconfined
-    ports:
-      - 8880:8880
+    group_add:
+      - video
+    ipc: host
     shm_size: 2g
 
   open-webui:
