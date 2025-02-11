@@ -14,22 +14,21 @@ services:
       - /mnt/fatboys/chirvo/ollama:/root/.ollama
     ports:
       - "11434:11434"
-    shm_size: 2g
+    shm_size: 512m
+    networks:
+      - open-webui_network
 
   tika:
     image: apache/tika:latest-full
     container_name: tika
     restart: unless-stopped
-    ports:
-      - 9998:9998
-    shm_size: 2g
+    shm_size: 512m
+    networks:
+      - open-webui_network
 
-  # FIXME: Not working.
-  redis:
+  valkey:
     image: valkey/valkey:latest
-    container_name: redis
-    volumes:
-      - ../volumes/redis:/data
+    container_name: valkey
     command: "valkey-server --save 30 1"
     healthcheck:
       test: "[ $$(valkey-cli ping) = 'PONG' ]"
@@ -49,15 +48,14 @@ services:
       options:
         max-size: "1m"
         max-file: "1"
-    shm_size: 2g
-        
+    shm_size: 512m
+    networks:
+      - open-webui_network
 
   kokoro-tts:
     image: chirvo/services/kokoro-tts-api:latest
     container_name: kokoro-tts
     restart: unless-stopped
-    ports:
-      - "8880:8880"
     environment:
       - PYTHONPATH=/app:/app/models
       - TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1
@@ -70,7 +68,9 @@ services:
     group_add:
       - video
     ipc: host
-    shm_size: 2g
+    shm_size: 512m
+    networks:
+      - open-webui_network
 
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
@@ -80,6 +80,7 @@ services:
       - ../volumes/open-webui:/app/backend/data
     depends_on:
       - ollama
+      - valkey
       - tika
       - kokoro-tts
     ports:
@@ -88,8 +89,11 @@ services:
       - "OLLAMA_API_BASE_URL=http://ollama:11434/api"
       - ENABLE_WEBSOCKET_SUPPORT="true"
       - WEBSOCKET_MANAGER="redis"
-      - WEBSOCKET_REDIS_URL="redis://redis:6379/1"
-    # extra_hosts:
-    #   - host.docker.internal:host-gateway
-    shm_size: 2g
+      - WEBSOCKET_REDIS_URL="redis://valkey:6379/1"
+    shm_size: 512m
+    networks:
+      - open-webui_network  
 
+networks:
+  open-webui_network:
+    driver: bridge
