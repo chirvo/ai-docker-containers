@@ -12,7 +12,6 @@ services:
       - /tmp/output/forge:/app/outputs
       - /mnt/fatboys/chirvo/sd/models:/app/models
       - /mnt/fatboys/chirvo/sd/embeddings:/app/embeddings
-      - /mnt/fatboys/chirvo/sd/extensions/sd-webui-controlnet/models:/app/extensions/sd-webui-controlnet/models
     ports:
       - "7860:7860"
     shm_size: 2g

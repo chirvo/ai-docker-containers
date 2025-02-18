@@ -1,4 +1,4 @@
-FROM rocm/pytorch:rocm6.3.2_ubuntu22.04_py3.10_pytorch_release_2.4.0
+FROM rocm/pytorch:rocm6.2.2_ubuntu22.04_py3.10_pytorch_2.5.1
 
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git /app
 WORKDIR /app

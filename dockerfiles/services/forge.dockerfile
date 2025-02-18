@@ -1,4 +1,4 @@
-FROM rocm/pytorch:rocm6.3.2_ubuntu22.04_py3.10_pytorch_release_2.4.0
+FROM rocm/pytorch:rocm6.2.2_ubuntu22.04_py3.10_pytorch_2.5.1
 
 RUN curl -L https://github.com/lllyasviel/stable-diffusion-webui-forge/archive/refs/tags/latest.tar.gz > latest.tar.gz
 RUN tar zxf latest.tar.gz && mv stable-diffusion-webui-forge-latest /app && rm latest.tar.gz
