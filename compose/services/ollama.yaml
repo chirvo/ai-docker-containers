@@ -1,0 +1,19 @@
+services:
+  ollama:
+    image: chirvo/services/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    group_add:
+      - video
+    devices:
+      - /dev/dri
+      - /dev/kfd
+    security_opt:
+      - seccomp=unconfined
+    volumes:
+      - /mnt/fatboys/chirvo/ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+    shm_size: 512m
+    networks:
+      - open-webui_network

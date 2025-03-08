@@ -6,8 +6,8 @@ services:
     group_add:
       - video
     devices:
-      - '/dev/dri:/dev/dri'
-      - '/dev/kfd:/dev/kfd'
+      - "/dev/dri:/dev/dri"
+      - "/dev/kfd:/dev/kfd"
     volumes:
       - /mnt/fatboys/chirvo/sd/models/Stable-diffusion:/app/models/checkpoints
       - /mnt/fatboys/chirvo/sd/models/VAE:/app/models/vae

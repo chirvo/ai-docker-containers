@@ -1,98 +1,28 @@
 services:
   ollama:
-    image: chirvo/services/ollama:latest
-    container_name: ollama
-    restart: unless-stopped
-    group_add:
-      - video
-    devices:
-      - /dev/dri
-      - /dev/kfd
-    security_opt:
-      - seccomp=unconfined
-    volumes:
-      - /mnt/fatboys/chirvo/ollama:/root/.ollama
-    ports:
-      - "11434:11434"
-    shm_size: 512m
-    networks:
-      - open-webui_network
+    extends:
+      file: ./services/ollama.yaml
+      service: ollama
 
   tika:
-    image: apache/tika:latest-full
-    container_name: tika
-    restart: unless-stopped
-    shm_size: 512m
-    networks:
-      - open-webui_network
+    extends:
+      file: ./services/tika.yaml
+      service: tika
 
   valkey:
-    image: valkey/valkey:latest
-    container_name: valkey
-    command: "valkey-server --save 30 1"
-    healthcheck:
-      test: "[ $$(valkey-cli ping) = 'PONG' ]"
-      start_period: 5s
-      interval: 1s
-      timeout: 3s
-      retries: 5
-    restart: unless-stopped
-    cap_drop:
-      - ALL
-    cap_add:
-      - SETGID
-      - SETUID
-      - DAC_OVERRIDE
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-        max-file: "1"
-    shm_size: 512m
-    networks:
-      - open-webui_network
+    extends:
+      file: ./services/valkey.yaml
+      service: valkey
 
   kokoro-tts:
-    image: chirvo/services/kokoro-tts-api:latest
-    container_name: kokoro-tts
-    restart: unless-stopped
-    environment:
-      - PYTHONPATH=/app:/app/models
-      - TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1
-      - MIOPEN_LOG_LEVEL=3
-    devices:
-      - /dev/dri
-      - /dev/kfd
-    security_opt:
-      - seccomp=unconfined
-    group_add:
-      - video
-    ipc: host
-    shm_size: 512m
-    networks:
-      - open-webui_network
+    extends:
+      file: ./services/kokoro-tts.yaml
+      service: kokoro-tts
 
   open-webui:
-    image: ghcr.io/open-webui/open-webui:latest
-    container_name: open-webui
-    restart: unless-stopped
-    volumes:
-      - ../volumes/open-webui:/app/backend/data
-    depends_on:
-      - ollama
-      - valkey
-      - tika
-      - kokoro-tts
-    ports:
-      - 8080:8080
-    environment:
-      - "OLLAMA_API_BASE_URL=http://ollama:11434/api"
-      - ENABLE_WEBSOCKET_SUPPORT="true"
-      - WEBSOCKET_MANAGER="redis"
-      - WEBSOCKET_REDIS_URL="redis://valkey:6379/1"
-    shm_size: 512m
-    networks:
-      - open-webui_network  
+    extends:
+      file: ./services/open-webui.yaml
+      service: open-webui
 
 networks:
   open-webui_network:

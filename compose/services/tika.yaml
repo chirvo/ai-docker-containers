@@ -1,0 +1,8 @@
+services:
+  tika:
+    image: apache/tika:latest-full
+    container_name: tika
+    restart: unless-stopped
+    shm_size: 512m
+    networks:
+      - open-webui_network
