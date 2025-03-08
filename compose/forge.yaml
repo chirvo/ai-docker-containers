@@ -9,7 +9,7 @@ services:
       - '/dev/dri:/dev/dri'
       - '/dev/kfd:/dev/kfd'
     volumes:
-      - /tmp/output/forge:/app/output
+      - /tmp/output/forge:/app/outputs
       - /mnt/fatboys/chirvo/sd/models:/app/models
       - /mnt/fatboys/chirvo/sd/embeddings:/app/embeddings
     ports:
