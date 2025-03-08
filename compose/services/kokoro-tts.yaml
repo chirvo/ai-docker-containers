@@ -16,5 +16,3 @@ services:
       - video
     ipc: host
     shm_size: 512m
-    networks:
-      - open-webui_network

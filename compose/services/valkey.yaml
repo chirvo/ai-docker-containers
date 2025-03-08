@@ -22,5 +22,3 @@ services:
         max-size: "1m"
         max-file: "1"
     shm_size: 512m
-    networks:
-      - open-webui_network
