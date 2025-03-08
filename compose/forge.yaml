@@ -9,9 +9,9 @@ services:
       - '/dev/dri:/dev/dri'
       - '/dev/kfd:/dev/kfd'
     volumes:
-      - /tmp/output/forge:/app/outputs
+      - /tmp/output/forge:/app/output
       - /mnt/fatboys/chirvo/sd/models:/app/models
       - /mnt/fatboys/chirvo/sd/embeddings:/app/embeddings
     ports:
       - "7860:7860"
-    shm_size: 2g
+    shm_size: 8g
