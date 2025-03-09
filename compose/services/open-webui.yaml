@@ -4,7 +4,7 @@ services:
     container_name: open-webui
     restart: unless-stopped
     volumes:
-      - ../volumes/open-webui:/app/backend/data
+      - ../../volumes/open-webui:/app/backend/data
     depends_on:
       - ollama
       - valkey
