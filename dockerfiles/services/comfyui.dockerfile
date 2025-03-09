@@ -6,6 +6,9 @@ RUN pip install --pre --force-reinstall torch torchvision torchaudio --index-url
 RUN pip3 install -r requirements.txt
 RUN pip install --upgrade 'optree>=0.13.0'
 
+WORKDIR /app/custom_nodes
+RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git comfyui-manager
+WORKDIR /app
 # For 6700, 6600 and maybe other RDNA2 or older:
 #ENV HSA_OVERRIDE_GFX_VERSION=10.3.0
 # For AMD 7600 and maybe other RDNA3 cards:
@@ -13,4 +16,4 @@ RUN pip install --upgrade 'optree>=0.13.0'
 ENV TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1
 ENV PYTORCH_TUNABLEOP_ENABLED=1
 EXPOSE 8188/tcp
-CMD ["python3", "main.py", "--listen", "--use-split-cross-attention"]
+CMD ["python3", "main.py", "--listen", "--use-split-cross-attention", "--use-pytorch-split-attention", "--reserve-vram", "4", "--fast"]
