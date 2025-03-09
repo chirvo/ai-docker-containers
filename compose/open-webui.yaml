@@ -25,5 +25,6 @@ services:
       service: open-webui
 
 networks:
-  open-webui_network:
+  default:
+    name: open-webui_default
     driver: bridge
