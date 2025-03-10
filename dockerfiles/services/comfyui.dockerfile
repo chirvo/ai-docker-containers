@@ -17,4 +17,4 @@ ENV TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1
 ENV PYTORCH_TUNABLEOP_ENABLED=1
 EXPOSE 8188/tcp
 
-CMD ["python3", "main.py", "--listen", "--use-split-cross-attention", "--reserve-vram", "4", "--fast", "--disable-smart-memory"]
+CMD ["python3", "main.py", "--listen", "--use-split-cross-attention", "--reserve-vram", "4", "--fast", "--disable-smart-memory", "--force-fp32"]
