@@ -15,6 +15,7 @@ WORKDIR /app
 #ENV HSA_OVERRIDE_GFX_VERSION=11.0.0
 ENV TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1
 ENV PYTORCH_TUNABLEOP_ENABLED=1
+ENV PYTORCH_HIP_ALLOC_CONF=garbage_collection_threshold:0.6,max_split_size_mb:6144
 EXPOSE 8188/tcp
-
-CMD ["python3", "main.py", "--listen", "--use-split-cross-attention", "--reserve-vram", "4", "--fast", "--disable-smart-memory", "--force-fp32"]
+# --cpu-vae instead of --fp32-vae if there's VRAM shortage
+CMD ["python3", "main.py", "--listen", "--use-split-cross-attention", "--reserve-vram", "5", "--normalvram", "--fast", "--force-fp32", "--fp32-vae"]
