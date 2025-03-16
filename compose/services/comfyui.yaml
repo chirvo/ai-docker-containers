@@ -15,6 +15,7 @@ services:
       - /mnt/fatboys/chirvo/sd/models/Lora:/app/models/loras
       - /mnt/fatboys/chirvo/sd/embeddings:/app/models/embeddings
       - /tmp/output/comfyui:/app/output
+      - ../../volumes/comfyui/config:/app/config
     ports:
       - "8188:8188"
     environment:
