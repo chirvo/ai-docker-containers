@@ -6,7 +6,7 @@ mapfile -t SERVICE_IMAGES < <(basename -s .dockerfile -a ./dockerfiles/services/
 
 # Function to generate Docker image tag
 _generate_tag() {
-  echo "chirvo/$(echo "$1" | sed -e 's/[a-zA-Z].*\/[0-9][0-9]-//'):latest"
+  echo "chirvo/$(echo "$1" | sed -e 's/[a-zA-Z].*\/[0-9][0-9]-//'):$(date -u +%Y%m%d_%H%M%S)"
 }
 
 # Function to build a specific Docker image based on the provided name (first argument) and additional parameters (second argument)
@@ -15,7 +15,10 @@ _build() {
   local build_args="$2"
   local dockerfile="./dockerfiles/$image_name.dockerfile"
   local tag
+  local latest_tag
+  # shellcheck disable=SC2016
   tag=$(_generate_tag "$image_name")
+  latest_tag=${tag//:*/:latest}
 
   # Check if the specified Dockerfile exists
   if [ ! -f "$dockerfile" ]; then
@@ -24,11 +27,11 @@ _build() {
   fi
 
   # Print building status
-  echo -n "Building image for '$image_name' with tag '$tag': "
+  echo "Building image for '$image_name' with tag '$tag'..."
 
   # Execute docker build command to build the image
   # shellcheck disable=SC2086
-  if docker build $build_args --force-rm --tag "$tag" -f "$dockerfile" .; then
+  if docker build $build_args --force-rm --tag "$latest_tag" --tag "$tag" -f "$dockerfile" .; then
     echo "done."
   else
     echo "error."
