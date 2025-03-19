@@ -35,14 +35,14 @@ WORKDIR /
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 RUN uv venv
 RUN uv python install 3.10
-
+RUN uv pip install --upgrade pip
 
 # Install ROCm and AMDGPU
 RUN <<EOF
-wget https://repo.radeon.com/amdgpu-install/6.3.1/ubuntu/noble/amdgpu-install_6.3.60301-1_all.deb \
-apt install -y ./amdgpu-install_6.3.60301-1_all.deb \
-amdgpu-install -y --no-dkms --usecase=rocm,hip,mllib --no-32 \
-  && rm ./amdgpu-install_6.3.60301-1_all.deb
+wget https://repo.radeon.com/amdgpu-install/6.3.1/ubuntu/noble/amdgpu-install_6.3.60301-1_all.deb
+apt install -y ./amdgpu-install_6.3.60301-1_all.deb
+amdgpu-install -y --no-dkms --usecase=rocm,hip,mllib --no-32
+rm ./amdgpu-install_6.3.60301-1_all.deb
 EOF
 
 # Install HIP and LLVM
@@ -53,6 +53,4 @@ apt-get clean
 EOF
 
 # Install pytorch
-RUN <<EOF
-pip3 install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/rocm6.3
-EOF
+RUN uv pip install --pre --force-reinstall torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/rocm6.3
