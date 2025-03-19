@@ -13,12 +13,18 @@ services:
       - /mnt/fatboys/chirvo/sd/models/VAE:/app/models/vae
       - /mnt/fatboys/chirvo/sd/models/VAE-approx:/app/models/vae_approx
       - /mnt/fatboys/chirvo/sd/models/Lora:/app/models/loras
+      - /mnt/fatboys/chirvo/sd/models/ESRGAN:/app/models/upscale_models
+      - /mnt/fatboys/chirvo/sd/models/GFPGAN:/app/models/face_restore
       - /mnt/fatboys/chirvo/sd/embeddings:/app/models/embeddings
-      - /tmp/output/comfyui:/app/output
-      - ../../volumes/comfyui/config:/app/config
+      - /tmp/comfyui/output:/app/model/output
+      - ../../volumes/comfyui/input:/app/input
+      - ../../volumes/comfyui/models/configs:/app/models/configs
+      - ../../volumes/comfyui/models/ipadapter:/app/models/ipadapter
+      - ../../volumes/comfyui/models/clip_vision:/app/models/clip_vision
+      - ../../volumes/comfyui/models/controlnet:/app/models/controlnet
+      - ../../volumes/comfyui/user:/app/user
     ports:
       - "8188:8188"
-    environment:
-      - "TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1"
-      - "PYTORCH_TUNABLEOP_ENABLED=1"
-    shm_size: 8g
+    security_opt:
+      - seccomp=unconfined
+    shm_size: 4g
