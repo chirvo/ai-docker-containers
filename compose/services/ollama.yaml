@@ -14,4 +14,4 @@ services:
       - /mnt/fatboys/chirvo/ollama:/root/.ollama
     ports:
       - "11434:11434"
-    shm_size: 512m
+    shm_size: 1g
