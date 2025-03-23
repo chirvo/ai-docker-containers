@@ -65,18 +65,10 @@ EOF
 # nightly for rocm6.3
 RUN uv pip install --pre --force-reinstall torch torchvision torchaudio triton --index-url https://download.pytorch.org/whl/nightly/rocm6.3
 
-## Install CK xFormers.
-# Install from source
-# See: https://rocm.docs.amd.com/en/docs-6.2.4/how-to/llm-fine-tuning-optimization/model-acceleration-libraries.html
-WORKDIR /tmp
+## Install xFormers.
 RUN <<EOF
 set -e
-git clone https://github.com/ROCm/flash-attention.git
-git clone https://github.com/ROCm/xformers.git
-cd flash-attention/
-python setup.py install
-cd ../xformers/
-git submodule update --init --recursive
-python setup.py install
+uv pip install ninja packaging wheel psutil
+cd /tmp
+uv pip install -v -U git+https://github.com/facebookresearch/xformers.git@main#egg=xformers --no-build-isolation
 EOF
-WORKDIR /app

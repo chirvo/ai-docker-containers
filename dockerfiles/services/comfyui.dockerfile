@@ -17,4 +17,4 @@ uv pip install -r comfyui-manager/requirements.txt
 EOF
 
 EXPOSE 8188/tcp
-CMD ["/bin/sh", "-c", "LD_PRELOAD=libtcmalloc_minimal.so.4 python main.py --listen --use-pytorch-cross-attention --force-fp32 --reserve-vram 4" ]
+CMD ["/bin/sh", "-c", "LD_PRELOAD=libtcmalloc_minimal.so.4 python main.py --listen --use-pytorch-cross-attention --reserve-vram 4" ]
