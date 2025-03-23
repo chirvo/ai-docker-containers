@@ -2,13 +2,16 @@ services:
   comfyui:
     image: chirvo/services/comfyui:latest
     container_name: comfyui
-    # restart: unless-stopped
+    restart: unless-stopped
     group_add:
       - video
     devices:
       - "/dev/dri:/dev/dri"
       - "/dev/kfd:/dev/kfd"
     volumes:
+      - ../../volumes/comfyui/input:/app/input
+      - ../../volumes/comfyui/models:/app/models
+      - ../../volumes/comfyui/user:/app/user
       - /mnt/fatboys/chirvo/sd/models/Stable-diffusion:/app/models/checkpoints
       - /mnt/fatboys/chirvo/sd/models/VAE:/app/models/vae
       - /mnt/fatboys/chirvo/sd/models/VAE-approx:/app/models/vae_approx
@@ -17,14 +20,10 @@ services:
       - /mnt/fatboys/chirvo/sd/models/GFPGAN:/app/models/face_restore
       - /mnt/fatboys/chirvo/sd/embeddings:/app/models/embeddings
       - /tmp/comfyui/output:/app/model/output
-      - ../../volumes/comfyui/input:/app/input
-      - ../../volumes/comfyui/models/configs:/app/models/configs
-      - ../../volumes/comfyui/models/ipadapter:/app/models/ipadapter
-      - ../../volumes/comfyui/models/clip_vision:/app/models/clip_vision
-      - ../../volumes/comfyui/models/controlnet:/app/models/controlnet
-      - ../../volumes/comfyui/user:/app/user
     ports:
       - "8188:8188"
     security_opt:
       - seccomp=unconfined
+    cap_add:
+      - SYS_PTRACE
     shm_size: 4g
