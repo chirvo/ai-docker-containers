@@ -66,9 +66,9 @@ EOF
 RUN uv pip install --pre --force-reinstall torch torchvision torchaudio triton --index-url https://download.pytorch.org/whl/nightly/rocm6.3
 
 ## Install xFormers.
-RUN <<EOF
-set -e
-uv pip install ninja packaging wheel psutil
-cd /tmp
-uv pip install -v -U git+https://github.com/facebookresearch/xformers.git@main#egg=xformers --no-build-isolation
-EOF
+# RUN <<EOF
+# set -e
+# uv pip install ninja packaging wheel psutil
+# cd /tmp
+# uv pip install -v -U git+https://github.com/facebookresearch/xformers.git@main#egg=xformers --no-build-isolation
+# EOF
