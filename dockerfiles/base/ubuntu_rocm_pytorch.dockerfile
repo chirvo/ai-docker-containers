@@ -1,6 +1,9 @@
 FROM ubuntu:noble
 
 ARG DEBIAN_FRONTEND=noninteractive
+ARG UV_PYTHON="3.10"
+# Always check for the latest version of AMD drivers: https://repo.radeon.com/amdgpu-install/latest/ubuntu/noble/
+ARG AMDGPU_VERSION=6.3.60304-1
 
 ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
 ENV UV_LINK_MODE=copy
@@ -19,19 +22,29 @@ ENV PYTORCH_HIP_ALLOC_CONF=garbage_collection_threshold:0.6,max_split_size_mb:61
 ENV HSA_OVERRIDE_GFX_VERSION="11.0.0"
 ENV PYTORCH_ROCM_ARCH="gfx1100"
 
+## Prepare the system: Install basic dependencies, AMDGPU drivers, ROCm libraries, HIP, LLVM
 RUN <<EOF
 set -e
 apt update && apt -y dist-upgrade
+# Install basic dependencies
 apt install -y apt-utils curl gnupg software-properties-common wget dumb-init rsync git jq
 apt install -y liblcms2-2 libz3-4 libtcmalloc-minimal4 pkg-config
 apt install -y rustc cargo build-essential gcc make
 apt install -y espeak-ng libsndfile1 ffmpeg
+# Install AMDGPU drivers and ROCm libraries
+wget --no-cache https://repo.radeon.com/amdgpu-install/latest/ubuntu/noble/amdgpu-install_${AMDGPU_VERSION}_all.deb
+apt install -y ./amdgpu-install_${AMDGPU_VERSION}_all.deb
+amdgpu-install -y --no-dkms --usecase=rocm,hip,mllib --no-32
+rm ./amdgpu-install_${AMDGPU_VERSION}_all.deb
+# Install HIP and LLVM
+apt update && apt -y dist-upgrade
+apt install -y hip-rocclr llvm-amdgpu
+apt clean && rm -rf /var/lib/apt/lists/*
 EOF
 
-## Preparing venv with python 3.10 using uv
+## Prepare virtual environment with python 3.10 using uv
 # https://docs.astral.sh/uv/
 ENV VIRTUAL_ENV="/.venv"
-ARG UV_PYTHON="3.10"
 ENV PATH="/.venv/bin:/root/.local/bin:${PATH}"
 WORKDIR /
 RUN <<EOF
@@ -41,24 +54,6 @@ uv venv --python ${UV_PYTHON}
 uv pip install --upgrade pip
 EOF
 
-## Install AMDGPU drivers and ROCm libraries
-# Check always wget https://repo.radeon.com/amdgpu-install/latest/ubuntu/noble/ for the latest version
-ARG AMDGPU_VERSION=6.3.60304-1
-RUN <<EOF
-set -e
-wget --no-cache https://repo.radeon.com/amdgpu-install/latest/ubuntu/noble/amdgpu-install_${AMDGPU_VERSION}_all.deb
-apt install -y ./amdgpu-install_${AMDGPU_VERSION}_all.deb
-amdgpu-install -y --no-dkms --usecase=rocm,hip,mllib --no-32
-rm ./amdgpu-install_${AMDGPU_VERSION}_all.deb
-EOF
-
-# Install HIP and LLVM
-RUN <<EOF
-set -e
-apt update && apt -y dist-upgrade
-apt install -y hip-rocclr llvm-amdgpu
-apt clean && rm -rf /var/lib/apt/lists/*
-EOF
 
 ## Install pytorch
 # stable for rocm6.2.4
