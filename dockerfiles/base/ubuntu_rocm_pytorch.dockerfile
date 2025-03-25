@@ -10,42 +10,43 @@ ENV TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1
 ENV PYTORCH_TUNABLEOP_ENABLED=1
 ENV PYTORCH_HIP_ALLOC_CONF=garbage_collection_threshold:0.6,max_split_size_mb:6144
 
-## Try this envvars if you have issues:
-# For 6700, 6600 and maybe other RDNA2 or older:
-#ENV HSA_OVERRIDE_GFX_VERSION="10.3.0"
-#ENV PYTORCH_ROCM_ARCH="gfx1030"
+## Optional environment variables for specific GPUs
+# For RDNA2 GPUs (e.g., 6700, 6600)
+# ENV HSA_OVERRIDE_GFX_VERSION="10.3.0"
+# ENV PYTORCH_ROCM_ARCH="gfx1030"
 
-## For AMD 7600 and maybe other RDNA3 cards: 
+## For RDNA3 GPUs (e.g., 7600)
 ENV HSA_OVERRIDE_GFX_VERSION="11.0.0"
 ENV PYTORCH_ROCM_ARCH="gfx1100"
 
 RUN <<EOF
 set -e
-apt update && apt-get -y dist-upgrade
+apt update && apt -y dist-upgrade
 apt install -y apt-utils curl gnupg software-properties-common wget dumb-init rsync git jq
 apt install -y liblcms2-2 libz3-4 libtcmalloc-minimal4 pkg-config
 apt install -y rustc cargo build-essential gcc make
 apt install -y espeak-ng libsndfile1 ffmpeg
-apt clean
 EOF
 
 ## Preparing venv with python 3.10 using uv
 # https://docs.astral.sh/uv/
 ENV VIRTUAL_ENV="/.venv"
-ENV UV_PYTHON="3.10"
+ARG UV_PYTHON="3.10"
 ENV PATH="/.venv/bin:/root/.local/bin:${PATH}"
 WORKDIR /
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-RUN uv python install 3.10
-RUN uv venv --python ${UV_PYTHON}
-RUN uv pip install --upgrade pip
+RUN <<EOF
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv python install ${UV_PYTHON}
+uv venv --python ${UV_PYTHON}
+uv pip install --upgrade pip
+EOF
 
-## Install ROCm and AMDGPU
+## Install AMDGPU drivers and ROCm libraries
 # Check always wget https://repo.radeon.com/amdgpu-install/latest/ubuntu/noble/ for the latest version
 ARG AMDGPU_VERSION=6.3.60304-1
 RUN <<EOF
 set -e
-wget https://repo.radeon.com/amdgpu-install/latest/ubuntu/noble/amdgpu-install_${AMDGPU_VERSION}_all.deb
+wget --no-cache https://repo.radeon.com/amdgpu-install/latest/ubuntu/noble/amdgpu-install_${AMDGPU_VERSION}_all.deb
 apt install -y ./amdgpu-install_${AMDGPU_VERSION}_all.deb
 amdgpu-install -y --no-dkms --usecase=rocm,hip,mllib --no-32
 rm ./amdgpu-install_${AMDGPU_VERSION}_all.deb
@@ -54,9 +55,9 @@ EOF
 # Install HIP and LLVM
 RUN <<EOF
 set -e
-apt-get update && apt-get -y dist-upgrade
-apt-get install -y hip-rocclr llvm-amdgpu
-apt-get clean
+apt update && apt -y dist-upgrade
+apt install -y hip-rocclr llvm-amdgpu
+apt clean && rm -rf /var/lib/apt/lists/*
 EOF
 
 ## Install pytorch
@@ -65,10 +66,17 @@ EOF
 # nightly for rocm6.3
 RUN uv pip install --pre --force-reinstall torch torchvision torchaudio triton --index-url https://download.pytorch.org/whl/nightly/rocm6.3
 
-## Install xFormers.
+## Optional: Install xFormers (can break stuff!)
 # RUN <<EOF
 # set -e
 # uv pip install ninja packaging wheel psutil
 # cd /tmp
 # uv pip install -v -U git+https://github.com/facebookresearch/xformers.git@main#egg=xformers --no-build-isolation
 # EOF
+
+# Healthcheck to monitor container health
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD rocm-smi || exit 1
+
+# Default command
+CMD ["bash"]
