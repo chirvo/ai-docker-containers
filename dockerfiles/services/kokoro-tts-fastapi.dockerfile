@@ -10,6 +10,7 @@ RUN git config --global user.email "bigchirv@gmail.com" && git config --global u
 
 # Clone remsky/Kokoro-FastAPI, merge with bgm4free's fork
 RUN <<EOF
+set -e
 git clone https://github.com/remsky/Kokoro-FastAPI.git /app
 cd /app
 git remote add upstream https://github.com/bgs4free/Kokoro-FastAPI.git
@@ -21,7 +22,7 @@ git commit -a -m "Remove MigrationWorkingNotes.md and uv.lock"
 git checkout master
 git merge add-rocm-support
 # Install dependencies
-uv sync --extra rocm --no-install-project && uv pip install -e ".[rocm]" 
+uv sync --active --extra rocm --no-install-project && uv pip install -e ".[rocm]" 
 # Download and extract models (test)
 python docker/scripts/download_model.py --output api/src/models/v1_0
 EOF
@@ -29,4 +30,4 @@ EOF
 WORKDIR /app
 
 # Run FastAPI server
-CMD ["uv", "run", "--extra", "rocm", "python", "-m", "uvicorn", "api.src.main:app", "--host", "0.0.0.0", "--port", "8880"]
+CMD ["uv", "run", "--active", "--extra", "rocm", "python", "-m", "uvicorn", "api.src.main:app", "--host", "0.0.0.0", "--port", "8880"]
