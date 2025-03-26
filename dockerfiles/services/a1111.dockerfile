@@ -1,4 +1,4 @@
-FROM rocm/pytorch:rocm6.2.2_ubuntu22.04_py3.10_pytorch_2.5.1
+FROM chirvo/base/ubuntu_rocm_pytorch:latest AS base
 
 RUN git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git /app
 WORKDIR /app

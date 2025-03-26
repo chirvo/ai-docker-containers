@@ -1,4 +1,4 @@
-FROM chirvo/base/ubuntu_rocm_pytorch:latest AS builder
+FROM chirvo/base/ubuntu_rocm_pytorch:latest AS base
 
 ENV GRADIO_ANALYTICS_ENABLED=FALSE
 
