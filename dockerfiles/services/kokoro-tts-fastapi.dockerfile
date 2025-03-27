@@ -27,6 +27,7 @@ uv sync --active --extra rocm --no-install-project && uv pip install -e ".[rocm]
 python docker/scripts/download_model.py --output api/src/models/v1_0
 EOF
 
+EXPOSE 8880
 WORKDIR /app
 
 # Run FastAPI server

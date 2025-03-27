@@ -12,5 +12,7 @@ services:
       - seccomp=unconfined
     group_add:
       - video
+    ports:
+      - "8880:8880"
     ipc: host
     shm_size: 512m
