@@ -11,7 +11,8 @@ ENV USE_ROCM=1
 ENV USE_CUDA=0
 ENV TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1
 ENV PYTORCH_TUNABLEOP_ENABLED=1
-ENV PYTORCH_HIP_ALLOC_CONF=garbage_collection_threshold:0.6,max_split_size_mb:6144
+# max_split_size_mb: was 6144, now 128
+ENV PYTORCH_HIP_ALLOC_CONF=garbage_collection_threshold:0.6,max_split_size_mb:128
 
 ## Optional environment variables for specific GPUs
 # For RDNA2 GPUs (e.g., 6700, 6600)
