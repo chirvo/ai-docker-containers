@@ -9,16 +9,10 @@ services:
       - "/dev/dri:/dev/dri"
       - "/dev/kfd:/dev/kfd"
     volumes:
-      - ../../volumes/comfyui/input:/app/input
-      - ../../volumes/comfyui/models:/app/models
-      - ../../volumes/comfyui/user:/app/user
-      - /mnt/fatboys/chirvo/sd/models/Stable-diffusion:/app/models/checkpoints
-      - /mnt/fatboys/chirvo/sd/models/VAE:/app/models/vae
-      - /mnt/fatboys/chirvo/sd/models/VAE-approx:/app/models/vae_approx
-      - /mnt/fatboys/chirvo/sd/models/Lora:/app/models/loras
-      - /mnt/fatboys/chirvo/sd/models/ESRGAN:/app/models/upscale_models
-      - /mnt/fatboys/chirvo/sd/models/GFPGAN:/app/models/face_restore
-      - /mnt/fatboys/chirvo/sd/embeddings:/app/models/embeddings
+      - /mnt/fatboys/chirvo/volumes/comfyui/input:/app/input
+      - /mnt/fatboys/chirvo/volumes/comfyui/user:/app/user
+      - /mnt/fatboys/chirvo/volumes/comfyui/models:/app/models
+      - /mnt/fatboys/chirvo/volumes/comfyui/custom_nodes:/app/custom_nodes
       - /tmp/comfyui/output:/app/model/output
     ports:
       - "8188:8188"
@@ -26,4 +20,4 @@ services:
       - seccomp=unconfined
     cap_add:
       - SYS_PTRACE
-    shm_size: 4g
+    shm_size: 8g
