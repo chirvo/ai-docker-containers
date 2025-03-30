@@ -64,7 +64,7 @@ RUN uv pip install --force-reinstall torch torchvision torchaudio triton xformer
 # uv pip install ninja packaging wheel psutil
 # cd /tmp
 # git clone https://github.com/ROCm/composable_kernel.git && cd composable_kernel
-# git checkout rocm-6.2.4
+# git checkout rocm-6.3.3
 # mkdir build && cd build
 # cmake -D CMAKE_CXX_COMPILER=/opt/rocm/bin/hipcc -D CMAKE_BUILD_TYPE=Release -D GPU_TARGETS="${PYTORCH_ROCM_ARCH}" ..
 # make -j
