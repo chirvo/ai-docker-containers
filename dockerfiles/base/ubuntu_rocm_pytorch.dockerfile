@@ -28,9 +28,9 @@ RUN <<EOF
 set -e
 apt update && apt -y dist-upgrade
 # Install basic dependencies
-apt install -y apt-utils curl gnupg software-properties-common wget dumb-init rsync git jq
+apt install -y apt-utils curl gnupg software-properties-common wget dumb-init rsync git jq neovim
 apt install -y liblcms2-2 libz3-4 libtcmalloc-minimal4 pkg-config
-apt install -y rustc cargo build-essential gcc make
+apt install -y rustc cargo build-essential gcc make cmake
 apt install -y espeak-ng libsndfile1 ffmpeg
 # Install AMDGPU drivers and ROCm libraries
 wget --no-cache https://repo.radeon.com/amdgpu-install/latest/ubuntu/noble/amdgpu-install_${AMDGPU_VERSION}_all.deb
@@ -57,17 +57,19 @@ EOF
 
 
 ## Install pytorch
-# stable for rocm6.2.4
-# RUN uv pip install --force-reinstall torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.2.4
-# nightly for rocm6.3
-RUN uv pip install --pre --force-reinstall torch torchvision torchaudio triton --index-url https://download.pytorch.org/whl/nightly/rocm6.3
+RUN uv pip install --force-reinstall torch torchvision torchaudio triton xformers --index-url https://download.pytorch.org/whl/rocm6.2.4
 
-## Optional: Install xFormers (can break stuff!)
 # RUN <<EOF
 # set -e
 # uv pip install ninja packaging wheel psutil
 # cd /tmp
-# uv pip install -v -U git+https://github.com/facebookresearch/xformers.git@main#egg=xformers --no-build-isolation
+# git clone https://github.com/ROCm/composable_kernel.git && cd composable_kernel
+# git checkout rocm-6.2.4
+# mkdir build && cd build
+# cmake -D CMAKE_CXX_COMPILER=/opt/rocm/bin/hipcc -D CMAKE_BUILD_TYPE=Release -D GPU_TARGETS="${PYTORCH_ROCM_ARCH}" ..
+# make -j
+# make -j install
+
 # EOF
 
 # Healthcheck to monitor container health
