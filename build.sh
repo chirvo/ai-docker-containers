@@ -6,7 +6,7 @@ mapfile -t SERVICE_IMAGES < <(basename -s .dockerfile -a ./dockerfiles/services/
 
 # Function to generate Docker image tag
 _generate_tag() {
-  echo "chirvo/$(echo "$1" | sed -e 's/[a-zA-Z].*\/[0-9][0-9]-//'):$(date -u +%Y%m%d_%H%M%S)"
+  echo "chirvo/$(echo "$1" | sed -e 's/[a-zA-Z].*\/[0-9][0-9]-//'):$(date -u +%y%m%d_%H%M%S)"
 }
 
 # Function to build a specific Docker image based on the provided name (first argument) and additional parameters (second argument)
