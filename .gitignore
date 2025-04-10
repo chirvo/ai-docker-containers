@@ -1,3 +1,4 @@
 !volumes/volumes_are_created_here
 volumes/*/**
 extra
+.venv
