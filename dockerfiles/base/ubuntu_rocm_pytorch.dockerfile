@@ -1,7 +1,7 @@
 FROM ubuntu:noble
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG UV_PYTHON="3.10"
+ARG UV_PYTHON="3.11"
 # Always check for the latest version of AMD drivers: https://repo.radeon.com/amdgpu-install/latest/ubuntu/noble/
 ARG AMDGPU_VERSION=6.3.60304-1
 
@@ -10,9 +10,10 @@ ENV UV_LINK_MODE=copy
 ENV USE_ROCM=1
 ENV USE_CUDA=0
 ENV TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1
+ENV VLLM_USE_TRITON_FLASH_ATTN=0
 ENV PYTORCH_TUNABLEOP_ENABLED=1
-# max_split_size_mb: was 6144, now 128
-ENV PYTORCH_HIP_ALLOC_CONF=garbage_collection_threshold:0.6,max_split_size_mb:128
+ENV MIOPEN_FIND_MODE=FAST
+ENV PYTORCH_HIP_ALLOC_CONF=garbage_collection_threshold:0.2,max_split_size_mb:128,expandable_segments:True
 
 ## Optional environment variables for specific GPUs
 # For RDNA2 GPUs (e.g., 6700, 6600)
@@ -43,7 +44,7 @@ apt install -y hip-rocclr llvm-amdgpu
 apt clean && rm -rf /var/lib/apt/lists/*
 EOF
 
-## Prepare virtual environment with python 3.10 using uv
+## Prepare virtual environment with python3 using uv
 # https://docs.astral.sh/uv/
 ENV VIRTUAL_ENV="/.venv"
 ENV PATH="/.venv/bin:/root/.local/bin:${PATH}"
@@ -52,25 +53,26 @@ RUN <<EOF
 curl -LsSf https://astral.sh/uv/install.sh | sh
 uv python install ${UV_PYTHON}
 uv venv --python ${UV_PYTHON}
-uv pip install --upgrade pip
+uv pip install --upgrade pip setuptools wheel ninja packaging psutil
 EOF
 
 
 ## Install pytorch
-RUN uv pip install --force-reinstall torch torchvision torchaudio triton xformers --index-url https://download.pytorch.org/whl/rocm6.2.4
-
-# RUN <<EOF
-# set -e
-# uv pip install ninja packaging wheel psutil
-# cd /tmp
-# git clone https://github.com/ROCm/composable_kernel.git && cd composable_kernel
-# git checkout rocm-6.3.3
-# mkdir build && cd build
-# cmake -D CMAKE_CXX_COMPILER=/opt/rocm/bin/hipcc -D CMAKE_BUILD_TYPE=Release -D GPU_TARGETS="${PYTORCH_ROCM_ARCH}" ..
-# make -j
-# make -j install
-
-# EOF
+RUN uv pip install --force-reinstall --pre torch torchvision torchaudio triton --index-url https://download.pytorch.org/whl/nightly/rocm6.3
+## Install flash-attention
+#UPDATE: This fails when building the image. Installing 2.7.4.post1 for now.
+#pip install -U git+https://github.com/ROCm/flash-attention@howiejay/navi_support
+ENV BUILD_TARGET="rocm"
+ENV FLASH_ATTENTION_TRITON_AMD_ENABLE="TRUE" 
+RUN <<EOF
+set -e
+cd /tmp
+git clone https://github.com/Dao-AILab/flash-attention.git
+cd flash-attention
+git checkout v2.7.4.post1
+python setup.py install
+cd /
+EOF
 
 # Healthcheck to monitor container health
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
