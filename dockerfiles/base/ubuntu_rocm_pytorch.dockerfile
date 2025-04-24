@@ -1,4 +1,4 @@
-FROM ubuntu:noble
+FROM ubuntu:noble AS base
 
 ARG DEBIAN_FRONTEND=noninteractive \
   UV_PYTHON="3.11" \
@@ -27,7 +27,7 @@ ENV LC_ALL=C.UTF-8 LANG=C.UTF-8 \
   HSA_OVERRIDE_GFX_VERSION="11.0.0" \
   PYTORCH_ROCM_ARCH="gfx1100"
 
-## Prepare the system: Install basic dependencies, AMDGPU drivers, ROCm libraries, HIP, LLVM
+## Prepare the system: Install basic dependencies
 RUN <<EOF
 set -e
 apt update && apt -y dist-upgrade
@@ -35,7 +35,12 @@ apt update && apt -y dist-upgrade
 apt install -y apt-utils curl gnupg software-properties-common wget dumb-init rsync git jq neovim
 apt install -y liblcms2-2 libz3-4 libtcmalloc-minimal4 pkg-config python3-setuptools python3-wheel
 apt install -y rustc cargo build-essential gcc make cmake espeak-ng libsndfile1 ffmpeg
-# Add the current user to the render and video groups
+EOF
+
+## Prepare the system: Install AMDGPU drivers, ROCm libraries, HIP, LLVM
+FROM base AS rocmify
+RUN <<EOF
+set -e
 # Install AMDGPU drivers and ROCm libraries
 wget --no-cache https://repo.radeon.com/amdgpu-install/latest/ubuntu/noble/amdgpu-install_${AMDGPU_VERSION}_all.deb
 apt install -y ./amdgpu-install_${AMDGPU_VERSION}_all.deb
@@ -45,6 +50,12 @@ rm ./amdgpu-install_${AMDGPU_VERSION}_all.deb
 apt update && apt -y dist-upgrade
 apt install -y hip-rocclr llvm-amdgpu
 apt clean && rm -rf /var/lib/apt/lists/*
+EOF
+
+## Prepare the system: Install uv, python, 
+FROM rocmify AS pytorchify
+RUN <<EOF
+set -e
 ## virtual environment using uv: https://docs.astral.sh/uv/
 curl -LsSf https://astral.sh/uv/install.sh | sh
 uv python install ${UV_PYTHON}
@@ -59,10 +70,11 @@ cd /tmp
 git clone https://github.com/Dao-AILab/flash-attention.git
 cd flash-attention
 git checkout v2.7.4.post1
-python setup.py install
-cd /app
+uv run ./setup.py install
+cd /
 rm -rf /tmp/flash-attention
 EOF
+
 
 # Healthcheck to monitor container health
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
