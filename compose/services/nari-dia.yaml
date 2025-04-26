@@ -1,0 +1,19 @@
+services:
+  comfyui:
+    image: chirvo/services/nari-dia:latest
+    container_name: nari-dia
+    restart: unless-stopped
+    group_add:
+      - video
+    devices:
+      - "/dev/dri:/dev/dri"
+      - "/dev/kfd:/dev/kfd"
+    volumes:
+      - /mnt/fatboys/chirvo/volumes/dia:/root/.cache/huggingface/hub
+    ports:
+      - "7860:7860"
+    security_opt:
+      - seccomp=unconfined
+    cap_add:
+      - SYS_PTRACE
+    shm_size: 8g
