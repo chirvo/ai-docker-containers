@@ -1,17 +1,24 @@
 FROM chirvo/base/ubuntu_rocm_pytorch:latest AS base
 
+ARG COMFYUI_RELEASE="v0.3.27" \
+    COMFYUI_PARAMS="--use-pytorch-cross-attention --reserve-vram 4"
+
 ENV GRADIO_ANALYTICS_ENABLED=FALSE
 
-ARG COMFYUI_PARAMS="--use-pytorch-cross-attention --reserve-vram 4"
-WORKDIR /app
-RUN  <<EOF
+RUN <<EOF
 set -e
-# Clone the ComfyUI repository and install its dependencies
-git clone --depth 1 https://github.com/comfyanonymous/ComfyUI.git /app
+# Install required packages not listed in requirements.txt
 uv pip install --upgrade 'optree>=0.13.0'
-uv pip install onnx boto3 imageio-ffmpeg insightface setuptools simpleeval
-uv pip install -r requirements.txt
+uv pip install onnx boto3 imageio-ffmpeg setuptools simpleeval
+uv pip install insightface
+EOF
 # Clone ComfyUI-Manager and install its dependencies
+RUN <<EOF
+set -e
+git clone --depth 1 https://github.com/comfyanonymous/ComfyUI.git /app
+cd /app
+# git checkout --detach tags/${COMFYUI_RELEASE}
+uv pip install -r requirements.txt
 cd /app/custom_nodes
 git clone https://github.com/ltdrdata/ComfyUI-Manager.git comfyui-manager
 uv pip install -r comfyui-manager/requirements.txt
@@ -20,14 +27,14 @@ EOF
 FROM base AS final
 # Create the entrypoint script and set it as the default command
 WORKDIR /
-RUN  <<EOF
+RUN <<EOF
 set -e
 # Create the entrypoint script
 cat <<EOS > entrypoint.sh 
 #!/bin/bash
 if  [ ! -e '/.REQUIREMENTS_SATISFIED' ]; then
-  find /app/custom_nodes -maxdepth 2 -type f -name 'requirements.txt' -exec pip install -r {} \\;
-  touch /.REQUIREMENTS_SATISFIED
+    find /app/custom_nodes -maxdepth 2 -type f -name 'requirements.txt' -exec pip install -r {} \\;
+    touch /.REQUIREMENTS_SATISFIED
 fi
 
 cd /app
@@ -66,11 +73,11 @@ if "AMD" in torch.cuda.get_device_name() or "Radeon" in torch.cuda.get_device_na
             return hidden_states
 
         torch.nn.functional.scaled_dot_product_attention = sdpa_hijack
-        print("# # #\nAMD GO FAST\n# # #")
+        print("###\nSuccess: Flash attention for AMD enabled\n###")
     except ImportError as e:
-        print(f"# # #\nAMD GO SLOW\n{e}\n# # #")
+        print(f"###\nError: Flash attention for AMD NOT enabled\n{e}\n###")
 else:
-    print(f"# # #\nAMD GO SLOW\nCould not detect AMD GPU from:\n{torch.cuda.get_device_name()}\n# # #")
+    print(f"###\nFlash attention for AMD NOT enabled\nCould not detect AMD GPU from:\n{torch.cuda.get_device_name()}\n###")
 
 NODE_CLASS_MAPPINGS = {}
 NODE_DISPLAY_NAME_MAPPINGS = {}
