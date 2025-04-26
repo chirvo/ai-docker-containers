@@ -14,6 +14,7 @@ services:
       - /mnt/fatboys/chirvo/volumes/comfyui/models:/app/models
       - /mnt/fatboys/chirvo/volumes/comfyui/custom_nodes:/app/custom_nodes
       - /tmp/comfyui/output:/app/model/output
+      - /tmp/comfyui/temp:/app/temp
     ports:
       - "8188:8188"
     security_opt:
