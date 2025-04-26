@@ -32,9 +32,16 @@ RUN <<EOF
 set -e
 apt update && apt -y dist-upgrade
 # Install basic dependencies
-apt install -y apt-utils curl gnupg software-properties-common wget dumb-init rsync git jq neovim
-apt install -y liblcms2-2 libz3-4 libtcmalloc-minimal4 pkg-config python3-setuptools python3-wheel
-apt install -y rustc cargo build-essential gcc make cmake espeak-ng libsndfile1 ffmpeg
+apt install -y dumb-init
+#libs
+apt install -y liblcms2-2 libsndfile1 libtcmalloc-minimal4 libz3-4
+#dev tools and compilers
+apt install -y apt-utils build-essential clang-19 gcc rustc cargo cmake git make pkg-config python3-setuptools python3-wheel software-properties-common
+#other programs
+apt install -y curl espeak-ng ffmpeg gnupg jq neovim rsync wget 
+# Hardwire clang-19 to be the default clang
+update-alternatives --install /usr/bin/clang clang /usr/bin/clang-19 10
+update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-19 10
 EOF
 
 ## Prepare the system: Install AMDGPU drivers, ROCm libraries, HIP, LLVM
