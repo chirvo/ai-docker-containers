@@ -1,12 +1,12 @@
 FROM ubuntu:noble AS base
 
 ARG DEBIAN_FRONTEND=noninteractive \
-  UV_PYTHON="3.11" \
   # Always check for the latest version of AMD drivers: https://repo.radeon.com/amdgpu-install/latest/ubuntu/noble/
   AMDGPU_VERSION=6.4.60400-1
 
 ENV LC_ALL=C.UTF-8 LANG=C.UTF-8 \
   UV_LINK_MODE=copy \
+  UV_PYTHON="3.11" \
   USE_ROCM=1 \
   USE_CUDA=0 \
   BUILD_TARGET="rocm" \
