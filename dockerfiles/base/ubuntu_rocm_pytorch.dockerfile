@@ -70,6 +70,8 @@ uv venv --python ${UV_PYTHON}
 uv pip install --upgrade pip setuptools wheel ninja packaging psutil
 # Install pytorch
 uv pip install --force-reinstall --pre torch torchvision torchaudio triton --index-url https://download.pytorch.org/whl/nightly/rocm6.3
+# Install SafeTensors
+uv pip install --upgrade safetensors
 ## Install flash-attention
 #UPDATE: This fails when building the image. Installing 2.7.4.post1 for now.
 #pip install -U git+https://github.com/ROCm/flash-attention@howiejay/navi_support
