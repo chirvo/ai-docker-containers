@@ -9,10 +9,10 @@ services:
       - "/dev/dri:/dev/dri"
       - "/dev/kfd:/dev/kfd"
     volumes:
-      - /mnt/fatboys/chirvo/volumes/comfyui/input:/app/input
-      - /mnt/fatboys/chirvo/volumes/comfyui/user:/app/user
-      - /mnt/fatboys/chirvo/volumes/comfyui/models:/app/models
-      - /mnt/fatboys/chirvo/volumes/comfyui/custom_nodes:/app/custom_nodes
+      - /mnt/mirror/chirvo/volumes/comfyui/input:/app/input
+      - /mnt/mirror/chirvo/volumes/comfyui/user:/app/user
+      - /mnt/mirror/chirvo/volumes/comfyui/models:/app/models
+      - /mnt/mirror/chirvo/volumes/comfyui/custom_nodes:/app/custom_nodes
       - /tmp/comfyui/output:/app/model/output
       - /tmp/comfyui/temp:/app/temp
     ports:

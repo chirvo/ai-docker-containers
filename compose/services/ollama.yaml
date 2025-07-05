@@ -11,7 +11,7 @@ services:
     security_opt:
       - seccomp=unconfined
     volumes:
-      - /mnt/fatboys/chirvo/ollama:/root/.ollama
+      - /mnt/mirror/chirvo/ollama:/root/.ollama
     ports:
       - "11434:11434"
     shm_size: 1g

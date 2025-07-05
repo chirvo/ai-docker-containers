@@ -9,7 +9,7 @@ services:
       - "/dev/dri:/dev/dri"
       - "/dev/kfd:/dev/kfd"
     volumes:
-      - /mnt/fatboys/chirvo/volumes/dia:/root/.cache/huggingface/hub
+      - /mnt/mirror/chirvo/volumes/dia:/root/.cache/huggingface/hub
     ports:
       - "7860:7860"
     security_opt:

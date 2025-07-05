@@ -10,9 +10,9 @@ services:
       - "/dev/kfd:/dev/kfd"
     volumes:
       - /tmp/output/a1111:/app/outputs
-      - /mnt/fatboys/chirvo/sd/models:/app/models
-      - /mnt/fatboys/chirvo/sd/embeddings:/app/embeddings
-      - /mnt/fatboys/chirvo/sd/extensions/sd-webui-controlnet/models:/app/extensions/sd-webui-controlnet/models
+      - /mnt/mirror/chirvo/sd/models:/app/models
+      - /mnt/mirror/chirvo/sd/embeddings:/app/embeddings
+      - /mnt/mirror/chirvo/sd/extensions/sd-webui-controlnet/models:/app/extensions/sd-webui-controlnet/models
     ports:
       - "7860:7860"
     shm_size: 2g

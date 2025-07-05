@@ -2,7 +2,7 @@ FROM ubuntu:noble AS base
 
 ARG DEBIAN_FRONTEND=noninteractive \
   # Always check for the latest version of AMD drivers: https://repo.radeon.com/amdgpu-install/latest/ubuntu/noble/
-  AMDGPU_VERSION=6.4.60400-1
+  AMDGPU_VERSION=6.4.60401-1
 
 ENV LC_ALL=C.UTF-8 LANG=C.UTF-8 \
   UV_LINK_MODE=copy \
@@ -69,7 +69,7 @@ uv python install ${UV_PYTHON}
 uv venv --python ${UV_PYTHON}
 uv pip install --upgrade pip setuptools wheel ninja packaging psutil
 # Install pytorch
-uv pip install --force-reinstall --pre torch torchvision torchaudio triton --index-url https://download.pytorch.org/whl/nightly/rocm6.3
+uv pip install --force-reinstall --pre torch torchvision torchaudio triton --index-url https://download.pytorch.org/whl/nightly/rocm6.4
 # Install SafeTensors
 uv pip install --upgrade safetensors
 ## Install flash-attention
@@ -90,4 +90,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD rocm-smi || exit 1
 
 # Default command
-CMD ["bash"]
+CMD ["bash"
