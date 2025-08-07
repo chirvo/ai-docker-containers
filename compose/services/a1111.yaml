@@ -1,6 +1,6 @@
 services:
   a1111:
-    image: chirvo/services/a1111:latest
+    image: chirvo/a1111:latest
     container_name: a1111
     # restart: unless-stopped
     group_add:

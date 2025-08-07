@@ -1,6 +1,6 @@
 services:
   comfyui:
-    image: chirvo/services/nari-dia:latest
+    image: chirvo/nari-dia:latest
     container_name: nari-dia
     restart: unless-stopped
     group_add:

@@ -1,6 +1,6 @@
 services:
   comfyui:
-    image: chirvo/services/comfyui:latest
+    image: chirvo/comfyui:latest
     container_name: comfyui
     restart: unless-stopped
     group_add:

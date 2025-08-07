@@ -1,6 +1,6 @@
 services:
   ollama:
-    image: chirvo/services/ollama:latest
+    image: chirvo/ollama:latest
     container_name: ollama
     restart: unless-stopped
     group_add:

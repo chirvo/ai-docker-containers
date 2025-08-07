@@ -1,6 +1,6 @@
 services:
   forge:
-    image: chirvo/services/forge:latest
+    image: chirvo/forge:latest
     container_name: forge
     # restart: unless-stopped
     group_add:

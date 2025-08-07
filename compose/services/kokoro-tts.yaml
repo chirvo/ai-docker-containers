@@ -1,6 +1,6 @@
 services:
   kokoro-tts:
-    image: chirvo/services/kokoro-tts-fastapi:latest
+    image: chirvo/kokoro-tts-fastapi:latest
     container_name: kokoro-tts
     restart: unless-stopped
     environment:

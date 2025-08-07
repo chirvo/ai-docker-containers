@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Define arrays holding names of Dockerfiles for base and service images
-mapfile -t BASE_IMAGES < <(basename -s .dockerfile -a ./dockerfiles/base/*.dockerfile)
-mapfile -t SERVICE_IMAGES < <(basename -s .dockerfile -a ./dockerfiles/services/*.dockerfile)
+mapfile -t BASE_IMAGES < <(basename -s .dockerfile -a ./dockerfiles/*.dockerfile)
+mapfile -t SERVICE_IMAGES < <(basename -s .dockerfile -a ./dockerfiles/*.dockerfile)
 
 # Function to generate Docker image tag
 _generate_tag() {
@@ -77,38 +77,25 @@ clean)
   # Remove all Docker containers and images matching the patterns specified in $BASE_IMAGES and $SERVICE_IMAGES
   docker container prune -f
   _remove_all "${BASE_IMAGES[@]/#/base/}"
-  _remove_all "${SERVICE_IMAGES[@]/#/services/}"
   ;;
-base)
+all)
   # Build all base images listed in $BASE_IMAGES
   _build_all "${BASE_IMAGES[@]/#/base/}" "$2"
   ;;
-all)
-  # Build both the base and service images listed in $BASE_IMAGES and $SERVICE_IMAGES
-  _build_all "${BASE_IMAGES[@]/#/base/}" "$2"
-  _build_all "${SERVICE_IMAGES[@]/#/services/}" "$2"
-  ;;
 *)
   # Build a specific image based on the provided name (either base or service)
-  image_type=""
   if [ -n "$1" ]; then
     # shellcheck disable=SC2199
     # shellcheck disable=SC2076
-    if [[ " ${BASE_IMAGES[@]} " =~ " $1 " ]]; then
-      image_type="base"
-    elif [[ " ${SERVICE_IMAGES[@]} " =~ " $1 " ]]; then
-      image_type="services"
-    fi
-    echo "Found '$image_type/$1'."
-    _build "$image_type/$1" "$2"
+    echo "Found '$1'."
+    _build "$1" "$2"
     exit 0
   fi
 
   # Display usage instructions and list of available images
-  echo "Usage: $0 {clean|base|all|<image>}"
+  echo "Usage: $0 {clean|all|<image>}"
   echo ""
-  echo "Available Base images: ${BASE_IMAGES[*]}"
-  echo "Available Service images: ${SERVICE_IMAGES[*]}"
+  echo "Available images: ${BASE_IMAGES[*]}"
   echo ""
   exit 1
   ;;

@@ -1,4 +1,4 @@
-FROM chirvo/base/ubuntu_rocm_pytorch:latest AS base
+FROM chirvo/ubuntu_rocm:latest
 
 WORKDIR /root
 
